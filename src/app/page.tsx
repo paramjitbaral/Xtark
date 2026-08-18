@@ -36,13 +36,13 @@ export default function Home() {
   useGSAP(() => {
     // Luxury Smooth Inertia Scroll (Lenis)
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 0.75, // Prevents aggressive skipping on hard flicks
-      touchMultiplier: 1.5,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.0,
     });
 
     lenis.on('scroll', ScrollTrigger.update);
@@ -52,25 +52,13 @@ export default function Home() {
     };
 
     gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     // Force manual restoration to prevent native jitter
     if (typeof window !== 'undefined') {
       window.history.scrollRestoration = 'manual';
       window.scrollTo(0, 0);
     }
-
-    // Fade out loader once GSAP is ready
-    gsap.to('#initial-loader', {
-      opacity: 0,
-      duration: 0.8,
-      delay: 0.1,
-      ease: 'power2.inOut',
-      onComplete: () => {
-        const loader = document.getElementById('initial-loader');
-        if (loader) loader.style.display = 'none';
-      }
-    });
 
     // Mobile Menu JS
     const stage = document.getElementById('stage');
@@ -113,26 +101,24 @@ export default function Home() {
       `assets/frames/frame_${(index + 1).toString().padStart(4, '0')}.jpg`
     );
 
-    const images: HTMLImageElement[] = [];
+    const images: HTMLImageElement[] = new Array(frameCount);
     const portal = { frame: 0 };
-
-    for (let i = 0; i < frameCount; i++) {
-      const img = new Image();
-      img.src = currentFrame(i);
-      images.push(img);
-    }
-
-    if (images[0].complete) {
-      render();
-    } else {
-      images[0].onload = render;
-    }
+    let lastRenderedFrame = 0;
 
     function render() {
       if (!context || !canvas) return;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      const img = images[portal.frame];
-      if (img && img.complete) {
+      const targetIdx = Math.min(frameCount - 1, Math.max(0, Math.round(portal.frame)));
+      let img = images[targetIdx];
+      if (!img || !img.complete || img.naturalWidth === 0) {
+        if (images[lastRenderedFrame]?.complete && images[lastRenderedFrame]?.naturalWidth > 0) {
+          img = images[lastRenderedFrame];
+        } else if (images[0]?.complete && images[0]?.naturalWidth > 0) {
+          img = images[0];
+        }
+      }
+      if (img && img.complete && img.naturalWidth > 0) {
+        lastRenderedFrame = targetIdx;
+        context.clearRect(0, 0, canvas.width, canvas.height);
         const hRatio = canvas.width / img.width;
         const vRatio = canvas.height / img.height;
         const ratio = Math.max(hRatio, vRatio);
@@ -146,6 +132,70 @@ export default function Home() {
         context.drawImage(img, 0, 0, img.width, img.height,
           centerShift_x, centerShift_y, drawWidth, drawHeight);
       }
+    }
+
+    // Dismiss loader only after hero canvas is ready to prevent glitching
+    let loaderDismissed = false;
+    const dismissLoader = () => {
+      if (loaderDismissed) return;
+      loaderDismissed = true;
+      render();
+      gsap.to('#initial-loader', {
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          const loader = document.getElementById('initial-loader');
+          if (loader) loader.style.display = 'none';
+        }
+      });
+    };
+
+    // 1. Load the first critical frame first
+    const firstImg = new Image();
+    firstImg.src = currentFrame(0);
+    images[0] = firstImg;
+
+    if (firstImg.complete && firstImg.naturalWidth > 0) {
+      setTimeout(dismissLoader, 400);
+    } else {
+      firstImg.onload = () => {
+        setTimeout(dismissLoader, 400);
+      };
+      firstImg.onerror = () => {
+        dismissLoader();
+      };
+    }
+
+    // Safety fallback: dismiss loader within 2s max on slow connections
+    setTimeout(dismissLoader, 2000);
+
+    // 2. Progressive background batch loading for remaining frames
+    let currentBatchStart = 1;
+    const batchSize = 12;
+
+    const loadNextBatch = () => {
+      if (currentBatchStart >= frameCount) return;
+      const end = Math.min(currentBatchStart + batchSize, frameCount);
+      for (let i = currentBatchStart; i < end; i++) {
+        const img = new Image();
+        img.src = currentFrame(i);
+        images[i] = img;
+      }
+      currentBatchStart = end;
+      if (currentBatchStart < frameCount) {
+        if ('requestIdleCallback' in window) {
+          (window as any).requestIdleCallback(loadNextBatch, { timeout: 300 });
+        } else {
+          setTimeout(loadNextBatch, 80);
+        }
+      }
+    };
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(loadNextBatch, { timeout: 400 });
+    } else {
+      setTimeout(loadNextBatch, 200);
     }
 
     window.addEventListener('resize', () => {
