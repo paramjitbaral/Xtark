@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>XTARK | Premium Web Development</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+  <!-- GSAP for advanced scrolling -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Detailing Overlays -->
+  <div class="noise-overlay"></div>
+  <div class="grid-lines">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+  </div>
+
+  <div id="hero-pin-wrapper" style="height: 100vh; position: relative;">
+    <div class="hero-sticky-container"
+      style="position: sticky; top: 0; height: 100vh; width: 100%; z-index: 10; overflow: hidden;">
+      <div class="stage" id="stage">
+
+        <!-- White flash overlay to hide black edges on wide screens during peak zoom -->
+        <div class="white-flash"
+          style="position: absolute; inset: 0; background: white; opacity: 0; z-index: 5; pointer-events: none;"></div>
+
+        <!-- Video Plate -->
+        <div class="plate">
+          <canvas class="plate-video" id="hero-lightpass" width="1920" height="1080"
+            style="width: 100%; height: 100%; object-fit: cover;"></canvas>
+        </div>
+
+        <!-- Header -->
+        <header class="topbar">
+          <a href="#" class="brand" aria-label="Home">
+            <img src="assets/LOGO.png" alt="XTARK">
+          </a>
+
+          <nav class="links" aria-label="Primary">
+            <a href="#">Services</a>
+            <a href="#">Portfolio</a>
+            <a href="#">FAQ</a>
+            <a href="#">Contact</a>
+          </nav>
+
+          <a href="#" class="pill pill-nav"><span>Start Project</span></a>
+
+          <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">
+            <i></i>
+            <i></i>
+          </button>
+        </header>
+
+        <!-- Mobile Menu -->
+        <nav class="menu" id="menu" aria-hidden="true">
+          <div class="menu-inner">
+            <p class="menu-eyebrow">Menu</p>
+            <ul class="menu-list">
+              <li><a href="#">Services</a></li>
+              <li><a href="#">Portfolio</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+            <div class="menu-foot">
+              <a href="#" class="pill"><span>Start Project</span></a>
+              <a href="#" class="ghost">Our Services</a>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Hero Content -->
+        <main class="hero">
+          <div class="hero-left">
+            <h1 class="headline">
+              <span>Crafting Digital</span>
+              <span>Excellence</span>
+            </h1>
+            <p class="sub-left">Award-winning Web Development Agency</p>
+          </div>
+          <div class="hero-right">
+            <p class="sub">
+              <span>We build modern, premium, high-quality websites</span>
+              <span>to establish your strong digital presence.</span>
+            </p>
+            <div class="actions">
+              <a href="#" class="pill pill-cta"><span>Start Project</span></a>
+              <a href="#" class="ghost">Our Services</a>
+            </div>
+          </div>
+        </main>
+
+        <!-- Partner Logos -->
+        <div class="logos">
+          <div class="lg lg1">
+            <svg viewBox="0 0 30 31" aria-hidden="true">
+              <mask id="bite1">
+                <rect width="100%" height="100%" fill="white" />
+                <circle cx="19.5" cy="10.5" r="5.1" fill="black" />
+              </mask>
+              <path d="M15 1A14 14 0 1 1 1 15 14 14 0 0 1 15 1Z" mask="url(#bite1)" />
+              <circle cx="19.5" cy="10.5" r="3.5" />
+            </svg>
+            <span class="word">logoipsum</span>
+          </div>
+          <div class="lg lg2">
+            <svg viewBox="0 0 25 30" aria-hidden="true">
+              <rect x="0" y="5" width="8" height="20" rx="4" />
+              <path d="M12 15a7.5 7.5 0 1 1 15 0 7.5 7.5 0 0 1-15 0zm0 0a7.5 7.5 0 1 0 15 0 7.5 7.5 0 0 0-15 0z"
+                clip-path="inset(0 50% 0 0)" />
+              <circle cx="19.5" cy="15" r="7.5" />
+              <circle cx="19.5" cy="15" r="3" fill="#050505" />
+            </svg>
+            <span class="word">logoipsum<span class="dot"></span></span>
+          </div>
+          <div class="lg lg3">
+            <svg viewBox="0 0 28 28" aria-hidden="true" stroke-width="3.1">
+              <circle cx="14" cy="14" r="12.35" />
+              <path d="M7 14 Q 14 7, 21 14" stroke-linecap="round" />
+              <path d="M7 14 Q 14 21, 21 14" stroke-linecap="round" />
+            </svg>
+            <span class="word">logoipsum</span>
+          </div>
+          <div class="lg lg4">
+            <svg viewBox="0 0 28 25.5" aria-hidden="true">
+              <path d="M2 12 Q 7 2, 14 12 T 26 12 L 26 25 L 2 25 Z" fill="currentColor" stroke="none" />
+              <path d="M2 18 Q 7 8, 14 18 T 26 18" stroke="currentColor" stroke-width="3.05" fill="none"
+                stroke-linecap="round" />
+            </svg>
+            <span class="word">logoipsum</span>
+          </div>
+        </div>
+      </div> <!-- end stage -->
+    </div> <!-- end sticky-container -->
+  </div> <!-- end hero-pin-wrapper -->
+
+  <!-- Main content â€” sits naturally below the hero in the document flow -->
+  <main id="main-content" style="position: relative; z-index: 20; background: #ffffff; width: 100%;">
+
+    <!-- Sliding doors (moved here so they cover the new page perfectly) -->
+    <div class="sliding-doors"
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100vh; z-index: 50; pointer-events: none; display: flex;">
+      <div class="door-left" style="width: 50%; height: 100%; background: white; transform: translateX(0%);"></div>
+      <div class="door-right" style="width: 50%; height: 100%; background: white; transform: translateX(0%);"></div>
+    </div>
+
+    <!-- Video Showreel Section -->
+    <section class="video-showreel"
+      style="position: relative; display: flex; flex-direction: column; width: 100%; height: 100vh; align-items: center; justify-content: center; background-color: #ffffff; padding-top: 10vh; gap: 40px;">
+      <div style="display: grid; justify-items: center; text-align: center; gap: 24px; z-index: 10;">
+        <span
+          style="position: relative; max-width: 12ch; font-size: 0.75rem; text-transform: uppercase; line-height: 1.25; opacity: 0.4; color: #050505;">
+          Click the video to play
+          <span
+            style="position: absolute; left: 50%; top: 100%; height: 64px; width: 1px; background: linear-gradient(to bottom, transparent, var(--ink));"></span>
+        </span>
+      </div>
+
+      <div id="video-thumbnail-container"
+        style="width: 16vw; height: 16vw; min-width: 120px; min-height: 120px; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+        <div id="video-hover-play"
+          style="position: absolute; top: 0; left: 0; z-index: 20; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px; font-size: 0.875rem; color: white; mix-blend-mode: exclusion; user-select: none; pointer-events: none; opacity: 0; font-weight: 500;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 3L19 12L5 21V3Z" stroke="white" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          Play
+        </div>
+        <video id="thumbnail-video" autoplay muted playsinline loop
+          style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+          <source src="assets/VideoXtark.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </section>
+
+    <!-- Fullscreen Video Popover -->
+    <div id="video-popover"
+      style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; display: flex; align-items: center; justify-content: center; visibility: hidden; pointer-events: none;">
+      <div id="video-popover-backdrop"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; opacity: 0; cursor: pointer;">
+      </div>
+
+      <div id="video-popover-content"
+        style="position: relative; width: 100vw; height: 100vh; opacity: 0; clip-path: inset(43.5% 43.5% 33.5% 43.5%); overflow: hidden; background: #000;">
+        <video id="popover-video" autoplay style="width: 100%; height: 100%; object-fit: cover; outline: none;">
+          <source src="assets/VideoXtark.mp4" type="video/mp4" />
+        </video>
+
+        <span id="close-popover"
+          style="position: absolute; right: 32px; top: 32px; z-index: 50; cursor: pointer; color: rgba(255,255,255,0.6); transition: color 0.3s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </span>
+      </div>
+    </div>
+
+    <section class="content-section" style="position: relative; opacity: 1; pointer-events: auto;">
+      <div class="content-grid">
+        <div class="content-left">
+          <h2>The Next Era<br>of Digital.</h2>
+        </div>
+        <div class="content-right">
+          <p>Step into a new dimension of digital presence. We craft high-performance, immersive websites engineered
+            for scale and tailored for your business success.</p>
+          <div class="stats">
+            <div class="stat">
+              <h3>150+</h3>
+              <span>Projects Delivered</span>
+            </div>
+            <div class="stat">
+              <h3>AWWWARDS</h3>
+              <span>Winning Designs</span>
+            </div>
+            <div class="stat">
+              <h3>99%</h3>
+              <span>Client Satisfaction</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bento Box Philosophy -->
+    <section class="bento-section">
+      <div class="bento-grid">
+        <div class="bento-item bento-large bento-dark">
+          <h2>We don't just build websites. We engineer digital empires.</h2>
+        </div>
+        <div class="bento-item bento-small bento-light">
+          <div class="bento-stat">10+</div>
+          <p>Years of innovation</p>
+        </div>
+        <div class="bento-item bento-small bento-accent">
+          <div class="bento-stat">50</div>
+          <p>Global Awards</p>
+        </div>
+        <div class="bento-item bento-medium bento-dark bento-glow">
+          <h3>The Process</h3>
+          <p>Strategy first. Pixel-perfect execution second.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Sections Start -->
+    <!-- 1. Services (Stacking) -->
+    <section class="services-section">
+      <div class="services-header">
+        <h2>Our Expertise</h2>
+        <p>Comprehensive digital solutions for forward-thinking brands.</p>
+      </div>
+      <div class="services-stack">
+        <div class="service-card" id="card-1">
+          <div class="card-inner">
+            <span class="service-num">01</span>
+            <h3>Digital Product Design</h3>
+            <p>We create intuitive, engaging, and beautiful user interfaces that drive conversion and delight users.</p>
+          </div>
+        </div>
+        <div class="service-card" id="card-2">
+          <div class="card-inner">
+            <span class="service-num">02</span>
+            <h3>Web Development</h3>
+            <p>Robust, scalable, and ultra-fast web architectures built with modern technologies.</p>
+          </div>
+        </div>
+        <div class="service-card" id="card-3">
+          <div class="card-inner">
+            <span class="service-num">03</span>
+            <h3>Branding & Identity</h3>
+            <p>Crafting unique visual identities that resonate with your audience and stand the test of time.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Media Strip -->
+    <section class="media-strip-section">
+      <div class="media-strip-wrapper">
+        <div class="media-strip">
+          <div class="media-box" style="background: #222;">Design</div>
+          <div class="media-box" style="background: #333;">Build</div>
+          <div class="media-box" style="background: #444;">Launch</div>
+          <div class="media-box" style="background: #555;">Scale</div>
+          <div class="media-box" style="background: #222;">Design</div>
+          <div class="media-box" style="background: #333;">Build</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Portfolio (Horizontal Scroll) -->
+    <section class="portfolio-section">
+      <div class="portfolio-header">
+        <h2>Featured Work</h2>
+      </div>
+      <div class="portfolio-horizontal-wrapper">
+        <div class="portfolio-container">
+          <div class="portfolio-item">
+            <div class="portfolio-image" style="background: #111;"></div>
+            <div class="portfolio-info">
+              <h3>Fintech Dashboard</h3>
+              <span>UX/UI & Development</span>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-image" style="background: #222;"></div>
+            <div class="portfolio-info">
+              <h3>Eco E-Commerce</h3>
+              <span>Full-Stack Build</span>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-image" style="background: #333;"></div>
+            <div class="portfolio-info">
+              <h3>AI Platform</h3>
+              <span>Web GL Integration</span>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-image" style="background: #444;"></div>
+            <div class="portfolio-info">
+              <h3>Global Logistics</h3>
+              <span>Corporate Identity</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- News & Insights -->
+    <section class="news-section">
+      <div class="news-header">
+        <h2>Latest Insights</h2>
+      </div>
+      <div class="news-list">
+        <div class="news-item" data-image="assets/LOGO.png">
+          <h3>The Future of WebGL</h3>
+          <span>Read Article</span>
+        </div>
+        <div class="news-item" data-image="assets/LOGO.png">
+          <h3>Minimalism in E-Commerce</h3>
+          <span>Read Article</span>
+        </div>
+        <div class="news-item" data-image="assets/LOGO.png">
+          <h3>GSAP vs CSS Animations</h3>
+          <span>Read Article</span>
+        </div>
+      </div>
+      <!-- Hover Image that follows cursor -->
+      <div class="news-hover-image"></div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section class="faq-section">
+      <div class="faq-header">
+        <h2>Common Questions</h2>
+      </div>
+      <div class="faq-container">
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>How long does a typical project take?</h3>
+            <div class="faq-icon"><span>+</span></div>
+          </div>
+          <div class="faq-answer">
+            <p>Depending on the scope, our premium builds take anywhere from 8 to 16 weeks from discovery to launch.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>Do you work with startups?</h3>
+            <div class="faq-icon"><span>+</span></div>
+          </div>
+          <div class="faq-answer">
+            <p>Absolutely. We love partnering with ambitious founders to build their initial digital footprint.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>What tech stack do you use?</h3>
+            <div class="faq-icon"><span>+</span></div>
+          </div>
+          <div class="faq-answer">
+            <p>We specialize in modern web architectures including React, Next.js, WebGL (Three.js), and GSAP for animations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Testimonials Marquee -->
+    <section class="testimonials-section">
+      <div class="marquee-wrapper">
+        <div class="marquee">
+          <span>"Xtark completely revolutionized our digital presence." &bull;</span>
+          <span>"The fastest, most reliable team we've ever worked with." &bull;</span>
+          <span>"Our conversion rates doubled after the redesign." &bull;</span>
+          <span>"Xtark completely revolutionized our digital presence." &bull;</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  </div> <!-- end stage -->
+  </div> <!-- end hero-pin-wrapper -->
+
+  <!-- 4. Interactive Footer -->
+  <footer class="parallax-footer">
+    <div class="footer-content">
+      <h2>Ready to start?</h2>
+      <a href="#" class="massive-cta">Let's Talk</a>
+      <div class="footer-bottom">
+        <p>&copy; 2026 XTARK Agency. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Directional Cursor for Video Section -->
+  <div id="video-directional-cursor"
+    style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.875rem; font-weight: 500; color: white; mix-blend-mode: exclusion; opacity: 0;">
+    <svg id="vdc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(0deg); transition: transform 0.2s;">
+      <path d="M5 12h14"></path>
+      <path d="m12 5 7 7-7 7"></path>
+    </svg>
+    <span>Play</span>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
