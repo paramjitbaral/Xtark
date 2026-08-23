@@ -9,7 +9,7 @@ const projects = [
   { title: "SmartQ", subtitle: "SaaS Platform / 2026", image: "/smartq.png", tag: "Web Application" },
 ];
 
-export default function Work({ isViewActive }: { isViewActive?: boolean }) {
+export default function Work() {
   return (
     <div className="w-full bg-bg text-white pt-24 pb-16 md:pb-32 px-6 md:px-12 lg:px-24 flex flex-col items-center z-10 relative font-sans">
       

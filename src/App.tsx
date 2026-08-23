@@ -327,7 +327,7 @@ export default function App() {
                   <Explorations isActive={navPage === 1} isViewActive={activeView === 1} />
                 </section>
                 <section id="section-2" data-index="2" className="w-full relative section-observer">
-                  <Work isViewActive={activeView === 1} />
+                  <Work />
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
                 </section>
                 <section id="section-3" data-index="3" className="w-full min-h-[100dvh] relative section-observer">
