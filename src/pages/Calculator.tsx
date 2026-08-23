@@ -45,13 +45,11 @@ export default function Calculator() {
     <div className="w-full min-h-screen bg-bg flex items-start md:items-center justify-center py-24 overflow-y-auto">
       <section 
         id="calculator-section" 
-        className="w-full relative z-20 text-[#050505] flex justify-center items-center"
+        className="w-full relative z-20 text-[#050505] flex justify-center items-center px-0 sm:px-5"
         style={{ 
           backgroundColor: 'transparent',
           paddingTop: 'clamp(40px, 5vw, 80px)',
           paddingBottom: 'clamp(60px, 8vw, 100px)',
-          paddingLeft: '20px',
-          paddingRight: '20px',
         }}
       >
         <div 
@@ -78,11 +76,9 @@ export default function Calculator() {
 
           {/* Master Bento Container */}
           <div 
-            className="w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden"
+            className="w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-none sm:rounded-[24px] border-y sm:border-x sm:border border-black/10"
             style={{ 
               backgroundColor: '#fcfcfc',
-              border: '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '24px',
               boxShadow: '0 30px 80px -20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1)'
             }}
           >
@@ -107,7 +103,7 @@ export default function Calculator() {
                 </div>
 
                 <div 
-                  className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 p-1 rounded-xl bg-black/5 border border-black/5"
+                  className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-black/5 border border-black/5"
                 >
                   {[
                     { id: "design", label: "Design", sub: "UI/UX & Figma" },
@@ -120,21 +116,17 @@ export default function Calculator() {
                         key={opt.id}
                         type="button"
                         onClick={() => setServiceType(opt.id as any)}
+                        className="py-2.5 px-1 sm:p-3 rounded-[10px] text-center transition-all duration-200"
                         style={{
-                          padding: '12px 8px',
-                          borderRadius: '10px',
-                          textAlign: 'center',
-                          cursor: 'pointer',
                           backgroundColor: active ? '#ffffff' : 'transparent',
                           border: active ? '1px solid rgba(0, 0, 0, 0.1)' : '1px solid transparent',
                           boxShadow: active ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none',
-                          transition: 'all 0.18s ease'
                         }}
                       >
-                        <div style={{ fontSize: '13px', fontWeight: active ? 600 : 500, color: active ? '#050505' : '#5e5e5e' }}>
+                        <div className="text-[11px] sm:text-[13px]" style={{ fontWeight: active ? 600 : 500, color: active ? '#050505' : '#5e5e5e', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
                           {opt.label}
                         </div>
-                        <div style={{ fontSize: '10px', color: active ? '#5e5e5e' : '#a1a1aa', marginTop: '2px' }}>
+                        <div className="text-[9px] sm:text-[10px]" style={{ color: active ? '#5e5e5e' : '#a1a1aa', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {opt.sub}
                         </div>
                       </button>
@@ -255,7 +247,7 @@ export default function Calculator() {
                   </div>
 
                   {/* 4 Balanced Full-Width Milestone Tiers */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                  <div className="grid grid-cols-4 gap-1 sm:gap-1.5">
                     {[
                       { label: "Landing", sub: "1 Page", val: 1 },
                       { label: "Standard", sub: "5 Pages", val: 5 },
@@ -268,20 +260,16 @@ export default function Calculator() {
                           key={tier.val}
                           type="button"
                           onClick={() => setPages(tier.val)}
+                          className="py-1.5 px-0.5 sm:py-2 sm:px-1 rounded-lg text-center transition-all duration-150"
                           style={{
-                            padding: '8px 4px',
-                            borderRadius: '8px',
-                            textAlign: 'center',
-                            cursor: 'pointer',
                             backgroundColor: isSelected ? '#ffffff' : 'transparent',
                             border: isSelected ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
-                            transition: 'all 0.15s ease'
                           }}
                         >
-                          <div style={{ fontSize: '11px', fontWeight: isSelected ? 700 : 500, color: isSelected ? '#050505' : '#5e5e5e' }}>
+                          <div className="text-[9px] sm:text-[11px]" style={{ fontWeight: isSelected ? 700 : 500, color: isSelected ? '#050505' : '#5e5e5e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {tier.label}
                           </div>
-                          <div style={{ fontSize: '10px', color: isSelected ? '#5e5e5e' : '#a1a1aa', marginTop: '1px', fontFamily: 'monospace' }}>
+                          <div className="text-[8px] sm:text-[10px]" style={{ color: isSelected ? '#5e5e5e' : '#a1a1aa', marginTop: '1px', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
                             {tier.sub}
                           </div>
                         </button>
@@ -312,10 +300,11 @@ export default function Calculator() {
                     transition: 'all 0.18s ease'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
                     {/* Switch Indicator */}
                     <div 
                       style={{
+                        flexShrink: 0,
                         width: '36px',
                         height: '20px',
                         borderRadius: '999px',
@@ -339,17 +328,17 @@ export default function Calculator() {
                       />
                     </div>
 
-                    <div>
-                      <div style={{ fontSize: '13px', fontWeight: 600, color: includeGrowthPack ? '#050505' : '#5e5e5e' }}>
-                        SEO + Content Copywriting Pack
+                    <div style={{ minWidth: 0 }}>
+                      <div className="text-[12px] sm:text-[13px] truncate" style={{ fontWeight: 600, color: includeGrowthPack ? '#050505' : '#5e5e5e' }}>
+                        SEO + Content Pack
                       </div>
-                      <div style={{ fontSize: '11px', color: '#5e5e5e', marginTop: '2px' }}>
-                        High-converting copy, meta setup, and speed tuning
+                      <div className="hidden sm:block text-[11px] truncate" style={{ color: '#5e5e5e', marginTop: '2px' }}>
+                        High-converting copy, meta setup
                       </div>
                     </div>
                   </div>
 
-                  <span style={{ fontSize: '12px', color: '#5e5e5e', fontFamily: 'monospace', whiteSpace: 'nowrap', marginLeft: '12px' }}>
+                  <span style={{ flexShrink: 0, fontSize: '12px', color: '#5e5e5e', fontFamily: 'monospace', whiteSpace: 'nowrap', marginLeft: '12px' }}>
                     +₹350 / pg
                   </span>
                 </div>

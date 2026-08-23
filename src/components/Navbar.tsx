@@ -37,41 +37,46 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
     const isMobile = window.innerWidth < 768;
 
     if (menuOpen) {
-      const targetCurve = isMobile 
-        ? "M 15 0 C 30 25, 5 75, 15 100 L 100 100 L 100 0 Z" 
-        : "M 40 0 C 55 25, 30 75, 40 100 L 100 100 L 100 0 Z";
-      const sweepCurve = isMobile
-        ? "M -5 0 C 15 25, -20 75, -5 100 L 100 100 L 100 0 Z"
-        : "M 30 0 C 45 25, 20 75, 30 100 L 100 100 L 100 0 Z";
+      if (isMobile) {
+        // Fast GPU-accelerated slide for mobile
+        gsap.set(path, { attr: { d: "M 15 0 C 30 25, 5 75, 15 100 L 100 100 L 100 0 Z" } });
+        gsap.fromTo(path.parentElement, { x: "100%" }, { x: "0%", duration: 0.5, ease: "power3.out" });
+      } else {
+        const targetCurve = "M 40 0 C 55 25, 30 75, 40 100 L 100 100 L 100 0 Z";
+        const sweepCurve = "M 30 0 C 45 25, 20 75, 30 100 L 100 100 L 100 0 Z";
 
-      // Opening wave animation
-      gsap.set(path, { attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" } });
-      tl.to(path, {
-        attr: { d: sweepCurve },
-        duration: 0.5,
-        ease: "power2.inOut"
-      })
-      .to(path, {
-        attr: { d: targetCurve },
-        duration: 0.4,
-        ease: "power2.out"
-      });
+        // Opening wave animation
+        gsap.set(path, { attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" } });
+        tl.to(path, {
+          attr: { d: sweepCurve },
+          duration: 0.5,
+          ease: "power2.inOut"
+        })
+        .to(path, {
+          attr: { d: targetCurve },
+          duration: 0.4,
+          ease: "power2.out"
+        });
+      }
     } else {
-      const closingSweep = isMobile
-        ? "M 30 0 C 45 25, 20 75, 30 100 L 100 100 L 100 0 Z"
-        : "M 70 0 C 85 25, 60 75, 70 100 L 100 100 L 100 0 Z";
+      if (isMobile) {
+        // Fast slide out for mobile
+        tl.to(path.parentElement, { x: "100%", duration: 0.4, ease: "power3.in" });
+      } else {
+        const closingSweep = "M 70 0 C 85 25, 60 75, 70 100 L 100 100 L 100 0 Z";
 
-      // Closing wave animation
-      tl.to(path, {
-        attr: { d: closingSweep },
-        duration: 0.35,
-        ease: "power2.in"
-      })
-      .to(path, {
-        attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" },
-        duration: 0.3,
-        ease: "power2.out"
-      });
+        // Closing wave animation
+        tl.to(path, {
+          attr: { d: closingSweep },
+          duration: 0.35,
+          ease: "power2.in"
+        })
+        .to(path, {
+          attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" },
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      }
     }
   }, [menuOpen]);
 
@@ -145,10 +150,10 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
           aria-label="Toggle menu"
         >
           {menuOpen ? (
-            /* Custom Cross Lines (Black on White background for both mobile and desktop) */
+            /* Custom Cross Lines (Black on mobile, White on desktop) */
             <div className="relative w-5 h-5 flex items-center justify-center">
-              <span className="absolute w-4 h-[1.5px] bg-black rotate-45 rounded-full transition-all duration-300" />
-              <span className="absolute w-4 h-[1.5px] bg-black -rotate-45 rounded-full transition-all duration-300" />
+              <span className="absolute w-4 h-[1.5px] bg-black md:bg-white rotate-45 rounded-full transition-all duration-300" />
+              <span className="absolute w-4 h-[1.5px] bg-black md:bg-white -rotate-45 rounded-full transition-all duration-300" />
             </div>
           ) : (
             /* Custom Hamburger Lines (White on mobile when closed, Black on desktop) */

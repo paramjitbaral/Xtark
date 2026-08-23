@@ -32,10 +32,18 @@ export default function Work({ isActive }: { isActive?: boolean }) {
     const splitText = (selector: string) => {
       const elements = sliderRef.current?.querySelectorAll(selector);
       if (!elements) return;
+      const isMobile = window.innerWidth < 640;
 
       elements.forEach((element) => {
         if (element.querySelector("span")) return;
         const text = (element as HTMLElement).innerText;
+        
+        // Performance optimization: Avoid animating 30+ separate DOM nodes per card on mobile
+        if (isMobile) {
+          element.innerHTML = `<span>${text}</span>`;
+          return;
+        }
+        
         const chars = text
           .split("")
           .map((char) => `<span>${char === " " ? "&nbsp;" : char}</span>`)
@@ -357,6 +365,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
           transform: translate3d(-50%, -50%, 0);
           background: #000;
           box-shadow: 0 26px 60px rgba(0, 0, 0, 0.32);
+          will-change: transform;
         }
 
         .work-page-scope .card::after {
@@ -430,6 +439,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
             height: 340px;
             border-radius: 18px;
             top: 38%;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
           }
 
           .work-page-scope .copy {

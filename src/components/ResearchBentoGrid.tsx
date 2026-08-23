@@ -84,7 +84,7 @@ function ArrowCursor({
             ? { x: -3, y: -36, rotate: -1.5 }
             : { x: 0, y: 0, rotate: 0 }
           : targetLeft
-            ? { left: targetLeft, top: targetTop, x: 0, y: [0, -3, 0], rotate: [0, 1.5, 0] }
+            ? { left: targetLeft, x: 0, y: [0, -3, 0], rotate: [0, 1.5, 0] }
             : { x: 0, y: [0, -3, 0], rotate: [0, 1.5, 0] }}
       transition={active !== undefined
         ? {
@@ -94,7 +94,6 @@ function ArrowCursor({
         : targetLeft
           ? {
               left: spring,
-              top: spring,
               y: { duration: 4.6, delay, repeat: Infinity, ease: "easeInOut" },
               rotate: { duration: 4.6, delay, repeat: Infinity, ease: "easeInOut" },
             }
@@ -162,9 +161,9 @@ function Panel({ className, children, ...props }: React.ComponentProps<"section"
 
 function FeatureCopy({ title, children, className }: { title: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("absolute inset-x-0 bottom-0 z-20", className)} style={{ paddingLeft: '40px', paddingRight: '40px', paddingBottom: '40px' }}>
+    <div className={cn("absolute inset-x-0 bottom-0 z-20 px-6 pb-6 sm:px-10 sm:pb-8", className)}>
       <h3 className="text-[20px] font-semibold leading-[1.08] tracking-[-0.045em] text-[#f1f1f1] sm:text-[22px]">{title}</h3>
-      <p className="max-w-[360px] text-[14px] leading-[1.45] tracking-[-0.015em] text-[#858585] sm:text-[15px]" style={{ marginTop: '16px' }}>{children}</p>
+      <p className="max-w-[360px] text-[14px] leading-[1.45] tracking-[-0.015em] text-[#858585] sm:text-[15px] mt-3 sm:mt-4">{children}</p>
     </div>
   );
 }
@@ -215,7 +214,7 @@ function DesignsPanel({
   }, [autoPlay, brands.length, reduceMotion, rotationInterval, selectBrand, selected]);
 
   return (
-    <Panel className="min-h-[350px] sm:min-h-[320px] @min-[840px]:col-span-12 @min-[840px]:min-h-[302px] @min-[840px]:row-span-1">
+    <Panel className="min-h-[260px] sm:min-h-[320px] @min-[840px]:col-span-12 @min-[840px]:min-h-[302px] @min-[840px]:row-span-1">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 grid h-[78%] grid-cols-[repeat(28,minmax(0,1fr))] grid-rows-[repeat(9,minmax(0,1fr))] gap-px overflow-hidden"
@@ -241,7 +240,7 @@ function DesignsPanel({
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[76%] bg-[radial-gradient(ellipse_at_50%_18%,transparent_12%,rgba(0,0,0,.5)_58%,#000000_100%)]" />
       
       <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-[760px] pointer-events-none">
-        <div className="absolute inset-x-0 top-[9%] z-10 flex items-center gap-1.5 sm:top-[12%] sm:gap-2.5 pointer-events-auto" style={{ paddingLeft: '28px', paddingRight: '28px' }}>
+        <div className="absolute inset-x-0 top-[9%] z-10 flex items-center gap-1.5 px-5 sm:px-7 sm:top-[6%] sm:gap-2.5 pointer-events-auto">
           {brands.map((brand, index) => (
             <motion.button
               type="button"
@@ -286,12 +285,11 @@ function DesignsPanel({
 
         <ArrowCursor
           label={userLabel}
-          className="left-[35%] top-[40%] pointer-events-auto"
+          className="left-[35%] top-[25%] sm:top-[35%] pointer-events-auto"
           targetLeft={cursorStops[selected]}
-          targetTop="40%"
           delay={0.2}
         />
-        <ArrowCursor label={collaboratorLabel} inverted className="top-[54%] sm:top-[56%] pointer-events-auto" targetLeft="68.7%" delay={0.9} />
+        <ArrowCursor label={collaboratorLabel} inverted className="top-[38%] sm:top-[65%] pointer-events-auto" targetLeft="68.7%" delay={0.9} />
       </div>
 
       <FeatureCopy title={title}>{description}</FeatureCopy>

@@ -320,7 +320,7 @@ export default function App() {
             >
               <div
                 id={`page-container-${page.index}`}
-                className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth"
+                className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth overscroll-none"
               >
                 {page.component}
               </div>

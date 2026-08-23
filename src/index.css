@@ -133,6 +133,7 @@ html, body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  overscroll-behavior-y: none;
 }
 
 /* Custom Gradient & Halftone overlay utilities */
