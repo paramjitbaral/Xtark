@@ -3,19 +3,19 @@ import { motion } from "framer-motion";
 
 const stats = [
   {
-    value: "20+",
-    label: "Years Experience",
-    description: "Over two decades of designing, building, and deploying world-class digital systems and interactive layouts.",
+    value: "360°",
+    label: "End-to-End Delivery",
+    description: "From initial brand strategy and UI/UX design to robust web development and final deployment.",
   },
   {
-    value: "95+",
-    label: "Projects Done",
-    description: "Delivered premium bespoke websites, mobile interfaces, and digital architectures from concept to final product.",
+    value: "03",
+    label: "Core Disciplines",
+    description: "Specializing strictly in Brand Identity, Digital Experience, and scalable Web Architecture.",
   },
   {
-    value: "200%",
-    label: "Satisfied Clients",
-    description: "A track record of absolute quality, leading to consistent repeat partnerships and long-term business growth.",
+    value: "24/7",
+    label: "Global Reach",
+    description: "Building digital products that operate flawlessly across borders, timezones, and all devices.",
   },
 ];
 

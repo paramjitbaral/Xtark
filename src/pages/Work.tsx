@@ -1,12 +1,12 @@
 import React from "react";
 
 const projects = [
-  { title: "Fabric", subtitle: "Creative Agency / 2026", image: "/fabric.png", tag: "Strategy & Design" },
-  { title: "Gym", subtitle: "Fitness App / 2026", image: "/gym.png", tag: "Mobile Experience" },
-  { title: "Compass", subtitle: "Navigation System / 2026", image: "/compass.png", tag: "Product Design" },
-  { title: "Shop", subtitle: "E-Commerce / 2026", image: "/f.shop.png", tag: "E-Commerce" },
-  { title: "Klians", subtitle: "Brand Identity / 2026", image: "/klians.png", tag: "Branding" },
-  { title: "SmartQ", subtitle: "SaaS Platform / 2026", image: "/smartq.png", tag: "Web Application" },
+  { title: "Fabric", subtitle: "Creative Agency / 2026", image: "/fabric.png", tag: "Strategy & Design", url: "https://anantin-com.vercel.app/" },
+  { title: "Gym", subtitle: "Fitness App / 2026", image: "/gym.png", tag: "Mobile Experience", url: "https://gym-xtark.vercel.app/" },
+  { title: "Compass", subtitle: "Navigation System / 2026", image: "/compass.png", tag: "Product Design", url: "https://compass-launch.vercel.app/" },
+  { title: "Shop", subtitle: "E-Commerce / 2026", image: "/f.shop.png", tag: "E-Commerce", url: "https://anantin-com.vercel.app/shop" },
+  { title: "Klians", subtitle: "Brand Identity / 2026", image: "/klians.png", tag: "Branding", url: "https://klians.vercel.app/" },
+  { title: "SmartQ", subtitle: "SaaS Platform / 2026", image: "/smartq.png", tag: "Web Application", url: "https://klsmartq.vercel.app/" },
 ];
 
 export default function Work() {
@@ -28,8 +28,11 @@ export default function Work() {
       {/* 2-Column Minimal Grid */}
       <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-20 gap-y-16 md:gap-y-24">
         {projects.map((project, idx) => (
-          <div 
+          <a 
             key={idx} 
+            href={project.url}
+            target="_blank"
+            rel="noreferrer"
             className="w-full flex flex-col group cursor-pointer"
           >
             {/* Standardized Aspect Ratio Image Container */}
@@ -40,7 +43,15 @@ export default function Work() {
                 className="absolute inset-0 w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] opacity-90 group-hover:opacity-100"
               />
               {/* Subtle hover overlay */}
-              <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700" />
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-white text-black font-sans text-[10px] uppercase tracking-[0.25em] font-semibold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out shadow-2xl">
+                  <span className="pl-1">View</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-[1px]">
+                    <path d="M7 7h10v10"/>
+                    <path d="M7 17 17 7"/>
+                  </svg>
+                </div>
+              </div>
             </div>
 
             {/* Clean Typography */}
@@ -58,7 +69,7 @@ export default function Work() {
               </span>
             </div>
             
-          </div>
+          </a>
         ))}
       </div>
     </div>
