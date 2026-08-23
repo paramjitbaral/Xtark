@@ -46,10 +46,11 @@ export default function Work({ isActive }: { isActive?: boolean }) {
 
     const positionCards = () => {
       if (!sliderRef.current) return;
+      const offset = window.innerWidth < 640 ? 12 : 18;
       const cards = Array.from(sliderRef.current.querySelectorAll(".card"));
       gsap.to(cards, {
-        y: (index) => `${-18 + 18 * index}%`,
-        z: (index) => 18 * index,
+        y: (index) => `${-offset + offset * index}%`,
+        z: (index) => offset * index,
         duration: 0.65, // Speed up stack transition from 1s to 0.65s
         ease: "stackEase",
         stagger: -0.08,
@@ -176,10 +177,11 @@ export default function Work({ isActive }: { isActive?: boolean }) {
       // Instantly append the back card to the end of the DOM (so it becomes the front card)
       slider.appendChild(firstCard);
 
+      const offset = window.innerWidth < 640 ? 12 : 18;
       // Instantly position it off-screen at the bottom and in the front plane
       gsap.set(firstCard, {
         y: "160%",
-        z: 18 * (cards.length),
+        z: offset * (cards.length),
       });
 
       // Instantly hide its text below
@@ -190,7 +192,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
 
       // Animate the incoming card into stack position
       gsap.to(firstCard, {
-        y: `${-18 + 18 * (cards.length)}%`,
+        y: `${-offset + offset * (cards.length)}%`,
         duration: 0.55, // Speed up card entering from 0.78s to 0.55s
         ease: "stackEase",
         onComplete: () => {
@@ -318,7 +320,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
           content: "";
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.52));
+          background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.85) 100%);
         }
 
         .work-page-scope .card img {
@@ -377,26 +379,28 @@ export default function Work({ isActive }: { isActive?: boolean }) {
 
         @media (max-width: 640px) {
           .work-page-scope .slider {
-            top: 4vh;
+            top: 0;
           }
 
           .work-page-scope .card {
             width: calc(100vw - 36px);
-            height: 280px;
-            border-radius: 14px;
+            height: 340px;
+            border-radius: 18px;
+            top: 38%;
           }
 
           .work-page-scope .copy {
             width: calc(100% - 32px);
-            bottom: 20px;
+            bottom: 24px;
           }
 
           .work-page-scope .copy h1 {
-            font-size: 52px;
+            font-size: 40px;
           }
 
           .work-page-scope .copy p {
             font-size: 11px;
+            margin-top: 6px;
           }
         }
       `}</style>

@@ -54,24 +54,27 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Right curved sidebar (Hello Monday themed) */
+/* Menu container (Top Right on Mobile, Right Sidebar on Desktop) */
 .curved-sidebar-container {
   position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  right: 20px;
+  top: 20px;
   width: 40px;
+  height: 40px;
   background: transparent;
   z-index: 250;
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(-2px 0 6px rgba(0, 0, 0, 0.06));
 }
 
 @media (min-width: 768px) {
   .curved-sidebar-container {
+    right: 0;
+    top: 0;
+    bottom: 0;
     width: 55px;
+    height: auto;
     filter: drop-shadow(-3px 0 10px rgba(0, 0, 0, 0.08));
   }
 }

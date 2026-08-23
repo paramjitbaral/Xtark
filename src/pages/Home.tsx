@@ -108,7 +108,7 @@ export default function Home({ goToPage, isActive }: HomeProps) {
         >
           <video
             src="/hm-hero-mobile.mp4"
-            className="h-full w-auto filter invert opacity-85"
+            className="absolute left-1/2 -translate-x-1/2 top-[58%] md:top-1/2 -translate-y-1/2 h-full w-auto max-w-none filter invert opacity-85 scale-[0.85] md:scale-100 origin-center"
             style={{ clipPath: "inset(0 8px 0 8px)" }}
             autoPlay
             muted

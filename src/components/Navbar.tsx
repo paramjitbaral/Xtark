@@ -34,34 +34,44 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
     const tl = gsap.timeline();
     timelineRef.current = tl;
 
+    const isMobile = window.innerWidth < 768;
+
     if (menuOpen) {
+      const targetCurve = isMobile 
+        ? "M 15 0 C 30 25, 5 75, 15 100 L 100 100 L 100 0 Z" 
+        : "M 40 0 C 55 25, 30 75, 40 100 L 100 100 L 100 0 Z";
+      const sweepCurve = isMobile
+        ? "M -5 0 C 15 25, -20 75, -5 100 L 100 100 L 100 0 Z"
+        : "M 30 0 C 45 25, 20 75, 30 100 L 100 100 L 100 0 Z";
+
       // Opening wave animation
-      // 1. Instantly collapsed on the right
       gsap.set(path, { attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" } });
-      // 2. Sweep far left
       tl.to(path, {
-        attr: { d: "M 30 0 C 45 25, 20 75, 30 100 L 100 100 L 100 0 Z" },
+        attr: { d: sweepCurve },
         duration: 0.5,
         ease: "power2.inOut"
       })
-        // 3. Settle back to the stable wave
-        .to(path, {
-          attr: { d: "M 40 0 C 55 25, 30 75, 40 100 L 100 100 L 100 0 Z" },
-          duration: 0.4,
-          ease: "power2.out"
-        });
+      .to(path, {
+        attr: { d: targetCurve },
+        duration: 0.4,
+        ease: "power2.out"
+      });
     } else {
+      const closingSweep = isMobile
+        ? "M 30 0 C 45 25, 20 75, 30 100 L 100 100 L 100 0 Z"
+        : "M 70 0 C 85 25, 60 75, 70 100 L 100 100 L 100 0 Z";
+
       // Closing wave animation
       tl.to(path, {
-        attr: { d: "M 70 0 C 85 25, 60 75, 70 100 L 100 100 L 100 0 Z" },
+        attr: { d: closingSweep },
         duration: 0.35,
         ease: "power2.in"
       })
-        .to(path, {
-          attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" },
-          duration: 0.3,
-          ease: "power2.out"
-        });
+      .to(path, {
+        attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" },
+        duration: 0.3,
+        ease: "power2.out"
+      });
     }
   }, [menuOpen]);
 
@@ -103,8 +113,8 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
         <img src="/1.png" alt="Logo Text" className="h-5 md:h-6 object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]" />
       </div>
 
-      {/* Top Right Widget (Time/Location) */}
-      <div className="fixed top-6 right-[70px] md:top-8 md:right-[95px] z-[150] flex items-center gap-4 text-white">
+      {/* Top Right Widget (Time/Location) - Hidden on mobile to prevent overlapping */}
+      <div className="hidden md:flex fixed top-8 right-[95px] z-[150] items-center gap-4 text-white">
         <div className="flex items-center gap-2 font-sans text-[12px] uppercase tracking-[0.1em] font-medium select-none drop-shadow-md">
           <span className="flex items-center gap-1.5">
             <span>MUMBAI</span>
@@ -118,7 +128,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
       <div className="curved-sidebar-container">
         {/* Background SVG for the sleek curve (starts at 0 width at top/bottom, bulges in middle) */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-0"
+          className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-0"
           viewBox="0 0 100 1000"
           preserveAspectRatio="none"
         >
@@ -131,21 +141,21 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="relative z-10 flex flex-col items-center justify-center gap-1.5 w-8 h-8 hover:scale-110 transition-transform duration-300 cursor-pointer border-none bg-transparent"
+          className="relative z-10 flex flex-col items-center justify-center gap-1.5 w-8 h-8 md:hover:scale-110 transition-transform duration-300 cursor-pointer border-none bg-transparent"
           aria-label="Toggle menu"
         >
           {menuOpen ? (
-            /* Custom Cross Lines (White on Black background) */
+            /* Custom Cross Lines (Black on White background for both mobile and desktop) */
             <div className="relative w-5 h-5 flex items-center justify-center">
-              <span className="absolute w-4 h-[1.5px] bg-white rotate-45 rounded-full transition-all duration-300" />
-              <span className="absolute w-4 h-[1.5px] bg-white -rotate-45 rounded-full transition-all duration-300" />
+              <span className="absolute w-4 h-[1.5px] bg-black rotate-45 rounded-full transition-all duration-300" />
+              <span className="absolute w-4 h-[1.5px] bg-black -rotate-45 rounded-full transition-all duration-300" />
             </div>
           ) : (
-            /* Custom Hamburger Lines (Black on White background) */
+            /* Custom Hamburger Lines (White on mobile when closed, Black on desktop) */
             <>
-              <span className="w-5 h-[1.5px] bg-black transition-all duration-300 rounded-full" />
-              <span className="w-5 h-[1.5px] bg-black transition-all duration-300 rounded-full" />
-              <span className="w-5 h-[1.5px] bg-black transition-all duration-300 rounded-full" />
+              <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
+              <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
+              <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
             </>
           )}
         </button>
@@ -170,7 +180,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
         </svg>
 
         {/* Menu Navigation Links */}
-        <div className="flex flex-col gap-2 md:gap-2.5 items-center text-center select-none relative z-10 w-full md:w-[55%] ml-auto pr-[5%] md:pr-[8%]">
+        <div className="flex flex-col gap-2 md:gap-2.5 items-center text-center select-none relative z-10 w-[80%] md:w-[55%] ml-auto pr-0 md:pr-[8%]">
           {navLinks.map((link, idx) => (
             <button
               key={link.index}
@@ -207,7 +217,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
         </div>
 
         {/* Bottom Social Links */}
-        <div className="flex items-center gap-7 mt-12 relative z-10 w-full md:w-[55%] ml-auto justify-center pr-[5%] md:pr-[8%]">
+        <div className="flex items-center gap-7 mt-12 relative z-10 w-[80%] md:w-[55%] ml-auto justify-center pr-0 md:pr-[8%]">
           {[
             {
               icon: (
@@ -258,6 +268,13 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
               {social.icon}
             </a>
           ))}
+        </div>
+
+        {/* Mobile Time Widget in Menu */}
+        <div className="md:hidden flex items-center justify-center gap-1.5 mt-8 relative z-10 w-[80%] ml-auto pr-0 text-zinc-500 font-sans text-[11px] uppercase tracking-[0.1em] font-medium select-none">
+          <span>MUMBAI</span>
+          <span className="w-1 h-1 bg-zinc-300 rounded-full"></span>
+          <span>{time}</span>
         </div>
       </div>
     </>

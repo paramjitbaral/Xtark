@@ -42,7 +42,7 @@ export default function Calculator() {
   const sliderPercentage = ((pages - 1) / (20 - 1)) * 100;
 
   return (
-    <div className="w-full min-h-screen bg-bg flex items-center justify-center py-16 overflow-y-auto">
+    <div className="w-full min-h-screen bg-bg flex items-start md:items-center justify-center py-24 overflow-y-auto">
       <section 
         id="calculator-section" 
         className="w-full relative z-20 text-[#050505] flex justify-center items-center"
@@ -107,15 +107,7 @@ export default function Calculator() {
                 </div>
 
                 <div 
-                  style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(3, 1fr)', 
-                    gap: '6px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.03)',
-                    padding: '4px',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(0, 0, 0, 0.05)'
-                  }}
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 p-1 rounded-xl bg-black/5 border border-black/5"
                 >
                   {[
                     { id: "design", label: "Design", sub: "UI/UX & Figma" },
@@ -263,7 +255,7 @@ export default function Calculator() {
                   </div>
 
                   {/* 4 Balanced Full-Width Milestone Tiers */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                     {[
                       { label: "Landing", sub: "1 Page", val: 1 },
                       { label: "Standard", sub: "5 Pages", val: 5 },
