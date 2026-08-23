@@ -56,18 +56,32 @@ export default function Home({ goToPage, isActive }: HomeProps) {
 
   useEffect(() => {
     if (!isActive) return;
+    const isMobile = window.innerWidth < 768;
     const tl = gsap.timeline();
+    
     tl.fromTo(
       ".center-graphic",
       { opacity: 0, scale: 0.9, y: 30 },
       { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.1 }
     );
-    tl.fromTo(
-      ".blur-in",
-      { opacity: 0, filter: "blur(10px)", y: 20 },
-      { opacity: 1, filter: "blur(0px)", y: 0, duration: 1, ease: "power3.out" },
-      "-=0.9"
-    );
+    
+    if (isMobile) {
+      // Fast fade-in for mobile (no blur filter)
+      tl.fromTo(
+        ".blur-in",
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 1, ease: "power3.out" },
+        "-=0.9"
+      );
+    } else {
+      // Cinematic blur-in for desktop
+      tl.fromTo(
+        ".blur-in",
+        { opacity: 0, filter: "blur(10px)", y: 20 },
+        { opacity: 1, filter: "blur(0px)", y: 0, duration: 1, ease: "power3.out" },
+        "-=0.9"
+      );
+    }
   }, [isActive]);
 
   return (

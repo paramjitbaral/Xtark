@@ -156,19 +156,36 @@ export default function App() {
     };
 
     const isForward = to > from;
+    const isMobile = window.innerWidth < 768;
 
-    // SKEWED EDITORIAL SLIDE (Home <-> Main)
     const tl = gsap.timeline({ onComplete });
-    if (isForward) {
-      gsap.set(toEl, { display: "block", zIndex: 10, xPercent: 100, rotate: -6, scale: 1.08, transformOrigin: "50% 50%" });
-      gsap.set(fromEl, { zIndex: 5, transformOrigin: "50% 50%" });
-      tl.to(fromEl, { xPercent: -100, rotate: 6, scale: 0.9, duration: 0.85, ease: "power3.inOut" })
-        .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
+    
+    if (isMobile) {
+      // ULTRA-FAST MOBILE TRANSITION (No rotate, no scale)
+      if (isForward) {
+        gsap.set(toEl, { display: "block", zIndex: 10, yPercent: 100 });
+        gsap.set(fromEl, { zIndex: 5 });
+        tl.to(fromEl, { opacity: 0.5, duration: 0.5, ease: "power2.inOut" })
+          .to(toEl, { yPercent: 0, duration: 0.6, ease: "power3.out" }, "<");
+      } else {
+        gsap.set(toEl, { display: "block", zIndex: 5, opacity: 0.5 });
+        gsap.set(fromEl, { zIndex: 10, yPercent: 0 });
+        tl.to(fromEl, { yPercent: 100, duration: 0.6, ease: "power3.in" })
+          .to(toEl, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, "-=0.3");
+      }
     } else {
-      gsap.set(toEl, { display: "block", zIndex: 5, xPercent: -100, rotate: 6, scale: 0.9, transformOrigin: "50% 50%" });
-      gsap.set(fromEl, { zIndex: 10, xPercent: 0, rotate: 0, scale: 1, transformOrigin: "50% 50%" });
-      tl.to(fromEl, { xPercent: 100, rotate: -6, scale: 1.08, duration: 0.85, ease: "power3.inOut" })
-        .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
+      // SKEWED EDITORIAL SLIDE (Desktop only)
+      if (isForward) {
+        gsap.set(toEl, { display: "block", zIndex: 10, xPercent: 100, rotate: -6, scale: 1.08, transformOrigin: "50% 50%" });
+        gsap.set(fromEl, { zIndex: 5, transformOrigin: "50% 50%" });
+        tl.to(fromEl, { xPercent: -100, rotate: 6, scale: 0.9, duration: 0.85, ease: "power3.inOut" })
+          .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
+      } else {
+        gsap.set(toEl, { display: "block", zIndex: 5, xPercent: -100, rotate: 6, scale: 0.9, transformOrigin: "50% 50%" });
+        gsap.set(fromEl, { zIndex: 10, xPercent: 0, rotate: 0, scale: 1, transformOrigin: "50% 50%" });
+        tl.to(fromEl, { xPercent: 100, rotate: -6, scale: 1.08, duration: 0.85, ease: "power3.inOut" })
+          .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
+      }
     }
   };
 
