@@ -11,7 +11,7 @@ const projects = [
 
 export default function Work({ isViewActive }: { isViewActive?: boolean }) {
   return (
-    <div className="w-full bg-bg text-white pt-24 pb-32 px-6 md:px-12 lg:px-24 flex flex-col items-center z-10 relative font-sans">
+    <div className="w-full bg-bg text-white pt-24 pb-16 md:pb-32 px-6 md:px-12 lg:px-24 flex flex-col items-center z-10 relative font-sans">
       
       {/* Minimal Header */}
       <div className="w-full max-w-[1200px] mb-20 flex flex-col md:flex-row md:items-end justify-between border-t border-white/10 pt-12">

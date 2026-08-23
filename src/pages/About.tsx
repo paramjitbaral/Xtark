@@ -21,7 +21,7 @@ const stats = [
 
 export default function About() {
   return (
-    <div className="bg-bg py-24 md:py-32 select-none min-h-screen flex items-center">
+    <div className="bg-bg pt-8 pb-24 md:py-32 select-none min-h-screen flex items-center">
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 lg:px-16 w-full">
         
         {/* Header */}
