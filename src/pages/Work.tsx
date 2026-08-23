@@ -9,7 +9,7 @@ const projects = [
   { title: "Fabric", subtitle: "Creative Agency / 2026", image: "/fabric.png" },
   { title: "Gym", subtitle: "Fitness App / 2026", image: "/gym.png" },
   { title: "Compass", subtitle: "Navigation System / 2026", image: "/compass.png" },
-  { title: "F.Shop", subtitle: "E-Commerce / 2026", image: "/f.shop.png" },
+  { title: "Shop", subtitle: "E-Commerce / 2026", image: "/f.shop.png" },
   { title: "Klians", subtitle: "Brand Identity / 2026", image: "/klians.png" },
   { title: "SmartQ", subtitle: "SaaS Platform / 2026", image: "/smartq.png" },
 ];
@@ -42,13 +42,13 @@ export default function Work({ isActive }: { isActive?: boolean }) {
       elements.forEach((element) => {
         if (element.querySelector("span")) return;
         const text = (element as HTMLElement).innerText;
-        
+
         // Performance optimization: Avoid animating 30+ separate DOM nodes per card on mobile
         if (isMobile) {
           element.innerHTML = `<span>${text}</span>`;
           return;
         }
-        
+
         const chars = text
           .split("")
           .map((char) => `<span>${char === " " ? "&nbsp;" : char}</span>`)
@@ -280,7 +280,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
         // but typically we stop it. To be safe, we just return if animating.
         return;
       }
-      
+
       const deltaY = touchStartY - e.changedTouches[0].clientY;
       if (Math.abs(deltaY) < 50) return; // Ignore accidental tiny swipes
 
@@ -478,8 +478,8 @@ export default function Work({ isActive }: { isActive?: boolean }) {
       </div>
 
       {/* Ultra-light Mobile View (Native CSS Horizontal Scroll) */}
-      <div 
-        className="sm:hidden flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory h-full w-full items-center px-8 gap-5 hide-scrollbar" 
+      <div
+        className="sm:hidden flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory h-full w-full items-center px-8 gap-5 hide-scrollbar"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <style>{`
@@ -488,8 +488,8 @@ export default function Work({ isActive }: { isActive?: boolean }) {
           }
         `}</style>
         {[...projects].map((project, idx) => (
-          <article 
-            key={idx} 
+          <article
+            key={idx}
             className="flex-none w-[80vw] h-[58vh] rounded-[22px] overflow-hidden relative snap-center bg-black shadow-2xl"
           >
             <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover opacity-90" />
@@ -501,14 +501,14 @@ export default function Work({ isActive }: { isActive?: boolean }) {
           </article>
         ))}
       </div>
-      
+
       {/* Floating Action Hint */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 uppercase tracking-widest text-[10px] pointer-events-none z-20 hidden sm:block">
         Scroll to Browse
       </div>
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 uppercase tracking-widest text-[10px] pointer-events-none z-20 sm:hidden flex items-center gap-2">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse">
-          <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+          <path d="M19 12H5M5 12l7-7M5 12l7 7" />
         </svg>
         Swipe to Browse
       </div>

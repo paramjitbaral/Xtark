@@ -64,7 +64,7 @@ export default function App() {
       onComplete: () => {
         // Reset properties and hide the outgoing page
         gsap.set(fromEl, { display: "none", clearProps: "scale,opacity,clipPath,transform,transformOrigin" });
-        gsap.set(toEl, { clearProps: "zIndex,transformOrigin" });
+        gsap.set(toEl, { clearProps: "zIndex,transformOrigin,transform,scale,opacity" });
         if (path) gsap.set(path, { attr: { d: "M 0 100 V 100 Q 50 100 100 100 V 100 z" } });
         if (svgOverlay) gsap.set(svgOverlay, { visibility: "hidden", pointerEvents: "none" });
         
@@ -161,36 +161,44 @@ export default function App() {
       // ==========================================
       // 5. CURVED CORNER WIPE (Calculator <-> HowWeWork)
       // ==========================================
+      const isMobile = window.innerWidth < 640;
+      const dur1 = isMobile ? 0.45 : 1.0;
+      const dur2 = isMobile ? 0.35 : 0.8;
+
       if (isForward) {
         gsap.set(toEl, { display: "block", zIndex: 10, clipPath: "polygon(100% 100%, 100% 100%, 100% 100%)" });
         gsap.set(fromEl, { zIndex: 5 });
 
-        tl.to(toEl, { clipPath: "polygon(-30% 130%, 130% -30%, 130% 130%)", duration: 1.0, ease: "power2.in" })
-          .to(toEl, { clipPath: "polygon(-30% -30%, 130% -30%, 130% 130%, -30% 130%)", duration: 0.8, ease: "power2.out" });
+        tl.to(toEl, { clipPath: "polygon(-30% 130%, 130% -30%, 130% 130%)", duration: dur1, ease: "power2.in" })
+          .to(toEl, { clipPath: "polygon(-30% -30%, 130% -30%, 130% 130%, -30% 130%)", duration: dur2, ease: "power2.out" });
       } else {
         gsap.set(toEl, { display: "block", zIndex: 5 });
         gsap.set(fromEl, { zIndex: 10, clipPath: "polygon(-30% -30%, 130% -30%, 130% 130%, -30% 130%)" });
 
-        tl.to(fromEl, { clipPath: "polygon(-30% 130%, 130% -30%, 130% 130%)", duration: 0.8, ease: "power2.in" })
-          .to(fromEl, { clipPath: "polygon(100% 100%, 100% 100%, 100% 100%)", duration: 1.0, ease: "power2.out" });
+        tl.to(fromEl, { clipPath: "polygon(-30% 130%, 130% -30%, 130% 130%)", duration: dur1, ease: "power2.in" })
+          .to(fromEl, { clipPath: "polygon(100% 100%, 100% 100%, 100% 100%)", duration: dur2, ease: "power2.out" });
       }
 
     } else {
       // ==========================================
       // 6. SCALE FADE (HowWeWork <-> Journal / fallback)
       // ==========================================
+      const isMobile = window.innerWidth < 640;
+      const dur = isMobile ? 0.3 : 0.5;
+      const overlap = isMobile ? "<0.05" : "<0.15";
+      
       if (isForward) {
         gsap.set(toEl, { display: "block", zIndex: 10, opacity: 0, scale: 0.95 });
         gsap.set(fromEl, { zIndex: 5 });
 
-        tl.to(fromEl, { opacity: 0, scale: 1.05, duration: 0.5, ease: "power2.inOut" })
-          .to(toEl, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.inOut" }, "<0.15");
+        tl.to(fromEl, { opacity: 0, scale: 1.05, duration: dur, ease: "power2.inOut" })
+          .to(toEl, { opacity: 1, scale: 1, duration: dur, ease: "power2.inOut" }, overlap);
       } else {
         gsap.set(toEl, { display: "block", zIndex: 5, opacity: 0, scale: 1.05 });
         gsap.set(fromEl, { zIndex: 10, opacity: 1, scale: 1 });
 
-        tl.to(fromEl, { opacity: 0, scale: 0.95, duration: 0.5, ease: "power2.inOut" })
-          .to(toEl, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.inOut" }, "<0.15");
+        tl.to(fromEl, { opacity: 0, scale: 0.95, duration: dur, ease: "power2.inOut" })
+          .to(toEl, { opacity: 1, scale: 1, duration: dur, ease: "power2.inOut" }, overlap);
       }
     }
   };
