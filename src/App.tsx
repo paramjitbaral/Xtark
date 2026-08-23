@@ -161,17 +161,17 @@ export default function App() {
     const tl = gsap.timeline({ onComplete });
     
     if (isMobile) {
-      // SMOOTH VERTICAL SLIDE (Continuous scroll feeling)
+      // SNAPPY VERTICAL SLIDE (Native scroll feeling)
       if (isForward) {
         gsap.set(toEl, { display: "block", zIndex: 10, opacity: 1, yPercent: 100, xPercent: 0, rotate: 0, scale: 1 });
         gsap.set(fromEl, { zIndex: 5 });
-        tl.to(fromEl, { yPercent: -30, opacity: 0, duration: 0.7, ease: "power3.inOut" })
-          .to(toEl, { yPercent: 0, duration: 0.7, ease: "power3.inOut" }, "<");
+        tl.to(fromEl, { yPercent: -20, opacity: 0, duration: 0.4, ease: "power2.out" })
+          .to(toEl, { yPercent: 0, duration: 0.5, ease: "power3.out" }, "<");
       } else {
-        gsap.set(toEl, { display: "block", zIndex: 5, opacity: 0, yPercent: -30, xPercent: 0, rotate: 0, scale: 1 });
+        gsap.set(toEl, { display: "block", zIndex: 5, opacity: 0, yPercent: -20, xPercent: 0, rotate: 0, scale: 1 });
         gsap.set(fromEl, { zIndex: 10, yPercent: 0 });
-        tl.to(fromEl, { yPercent: 100, duration: 0.7, ease: "power3.inOut" })
-          .to(toEl, { yPercent: 0, opacity: 1, duration: 0.7, ease: "power3.inOut" }, "<");
+        tl.to(fromEl, { yPercent: 100, duration: 0.4, ease: "power2.out" })
+          .to(toEl, { yPercent: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, "<");
       }
     } else {
       // SKEWED EDITORIAL SLIDE (Desktop only)
