@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
-import "lenis/dist/lenis.css"; // Include Lenis basic styles if available, though typically optional
+import "lenis/dist/lenis.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
 
@@ -18,17 +18,13 @@ import Contact from "./pages/Contact";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeView, setActiveView] = useState<0 | 1>(0); // 0 = Home, 1 = Main scrollable page
-  const [navPage, setNavPage] = useState(0); // Tracks current section for Navbar (0-7)
+  const [activeView, setActiveView] = useState<0 | 1>(0); // 0 = Home, 1 = Main Site
+  const [navPage, setNavPage] = useState(0); // Tracks current section for Navbar
   
   const isTransitioningRef = useRef(false);
   const scrollCooldownRef = useRef(false);
 
-  // SVG Refs (kept for potential future use or if any stray animations need them)
-  const svgOverlayRef = useRef<SVGSVGElement | null>(null);
-  const pathRef = useRef<SVGPathElement | null>(null);
-
-  // Lenis Smooth Scrolling Setup
+  // Lenis Smooth Scrolling Setup for View 1
   useEffect(() => {
     if (activeView !== 1) return;
 
@@ -40,18 +36,16 @@ export default function App() {
     const lenis = new Lenis({
       wrapper: wrapper,
       content: content,
-      lerp: 0.08, // Adjust for buttery smoothness
+      lerp: 0.08,
       wheelMultiplier: 1.1,
       smoothWheel: true,
     });
 
     let rafId: number;
-
     function raf(time: number) {
       lenis.raf(time);
       rafId = requestAnimationFrame(raf);
     }
-    
     rafId = requestAnimationFrame(raf);
     (window as any).lenisInstance = lenis;
 
@@ -62,7 +56,7 @@ export default function App() {
     };
   }, [activeView]);
 
-  // Intersection Observer to track scroll position and update Navbar
+  // Intersection Observer for Navbar tracking in View 1
   useEffect(() => {
     if (activeView !== 1) return;
 
@@ -77,7 +71,7 @@ export default function App() {
       },
       {
         root: document.getElementById("page-container-1"),
-        threshold: 0.3, // Trigger when 30% of the section is visible
+        threshold: 0.2, // Lower threshold for huge parallax sections
       }
     );
 
@@ -91,7 +85,7 @@ export default function App() {
     if (isTransitioningRef.current) return;
     
     if (index === 0) {
-      if (activeView === 1) {
+      if (activeView !== 0) {
         triggerTransition(1, 0);
       }
     } else {
@@ -138,16 +132,13 @@ export default function App() {
 
     gsap.killTweensOf([fromEl, toEl]);
 
-    // Instantly prepare destination
+    // Prepare destination scroll positions
     if (to === 1) {
-      // If heading to a specific section in View 1, jump there instantly before showing it
       if (targetSectionIndex) {
         const container = document.getElementById("page-container-1");
         const targetSection = document.getElementById(`section-${targetSectionIndex}`);
-        if (container && targetSection) {
-          container.scrollTop = targetSection.offsetTop;
-          setNavPage(targetSectionIndex);
-        }
+        if (container && targetSection) container.scrollTop = targetSection.offsetTop;
+        setNavPage(targetSectionIndex);
       } else {
         const container = document.getElementById("page-container-1");
         if (container) container.scrollTop = 0;
@@ -157,35 +148,31 @@ export default function App() {
       setNavPage(0);
     }
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        gsap.set(fromEl, { display: "none", clearProps: "scale,opacity,clipPath,transform,transformOrigin,zIndex" });
-        gsap.set(toEl, { clearProps: "zIndex,transformOrigin,transform,scale,opacity" });
-        
-        setActiveView(to as 0 | 1);
-        isTransitioningRef.current = false;
-      }
-    });
+    const onComplete = () => {
+      gsap.set(fromEl, { display: "none", clearProps: "all" });
+      gsap.set(toEl, { clearProps: "all" });
+      setActiveView(to as 0 | 1);
+      isTransitioningRef.current = false;
+    };
 
     const isForward = to > from;
 
-    // SKEWED EDITORIAL CARD SLIDE (Home <-> Main)
+    // SKEWED EDITORIAL SLIDE (Home <-> Main)
+    const tl = gsap.timeline({ onComplete });
     if (isForward) {
       gsap.set(toEl, { display: "block", zIndex: 10, xPercent: 100, rotate: -6, scale: 1.08, transformOrigin: "50% 50%" });
       gsap.set(fromEl, { zIndex: 5, transformOrigin: "50% 50%" });
-
       tl.to(fromEl, { xPercent: -100, rotate: 6, scale: 0.9, duration: 0.85, ease: "power3.inOut" })
         .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
     } else {
       gsap.set(toEl, { display: "block", zIndex: 5, xPercent: -100, rotate: 6, scale: 0.9, transformOrigin: "50% 50%" });
       gsap.set(fromEl, { zIndex: 10, xPercent: 0, rotate: 0, scale: 1, transformOrigin: "50% 50%" });
-
       tl.to(fromEl, { xPercent: 100, rotate: -6, scale: 1.08, duration: 0.85, ease: "power3.inOut" })
         .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
     }
   };
 
-  // Wheel tracking specifically for navigating between Home (0) and Main (1) when at top/bottom
+  // Wheel tracking specifically for navigating between Home (0) and Main (1) when at top
   useEffect(() => {
     if (isLoading) return;
 
@@ -305,7 +292,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* View 1: Main Scrollable Page (Sections 1-7) */}
+          {/* View 1: Main Site */}
           <div
             id="page-wrapper-1"
             className="fixed inset-0 w-full h-full bg-black"
@@ -319,12 +306,11 @@ export default function App() {
               className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth overscroll-none"
             >
               <div id="page-content-1" className="w-full min-h-full">
-                <section id="section-1" data-index="1" className="w-full min-h-[100dvh] relative section-observer">
-                  <Explorations isActive={navPage === 1} />
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
+                <section id="section-1" data-index="1" className="w-full relative section-observer">
+                  <Explorations isActive={navPage === 1} isViewActive={activeView === 1} />
                 </section>
-                <section id="section-2" data-index="2" className="w-full min-h-[100dvh] relative section-observer">
-                  <Work isActive={navPage === 2} />
+                <section id="section-2" data-index="2" className="w-full relative section-observer">
+                  <Work isViewActive={activeView === 1} />
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
                 </section>
                 <section id="section-3" data-index="3" className="w-full min-h-[100dvh] relative section-observer">
@@ -349,20 +335,6 @@ export default function App() {
               </div>
             </div>
           </div>
-
-          {/* SVG Overlay (Kept for compatibility, hidden) */}
-          <svg
-            ref={svgOverlayRef}
-            className="fixed inset-0 w-full h-full pointer-events-none z-[50] invisible"
-            preserveAspectRatio="none"
-            viewBox="0 0 100 100"
-          >
-            <path
-              ref={pathRef}
-              className="fill-[#080808]"
-              d="M 0 100 V 100 Q 50 100 100 100 V 100 z"
-            />
-          </svg>
         </div>
     </>
   );

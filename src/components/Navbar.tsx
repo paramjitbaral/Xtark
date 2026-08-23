@@ -53,11 +53,11 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
           duration: 0.5,
           ease: "power2.inOut"
         })
-        .to(path, {
-          attr: { d: targetCurve },
-          duration: 0.4,
-          ease: "power2.out"
-        });
+          .to(path, {
+            attr: { d: targetCurve },
+            duration: 0.4,
+            ease: "power2.out"
+          });
       }
     } else {
       if (isMobile) {
@@ -72,11 +72,11 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
           duration: 0.35,
           ease: "power2.in"
         })
-        .to(path, {
-          attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" },
-          duration: 0.3,
-          ease: "power2.out"
-        });
+          .to(path, {
+            attr: { d: "M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z" },
+            duration: 0.3,
+            ease: "power2.out"
+          });
       }
     }
   }, [menuOpen]);
@@ -196,8 +196,8 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
             >
               <span
                 className={`font-display text-[26px] md:text-[32px] lg:text-[40px] transition-all duration-350 ${activePage === link.index
-                    ? "text-black translate-y-[-2px] font-medium"
-                    : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal"
+                  ? "text-black translate-y-[-2px] font-medium"
+                  : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal"
                   }`}
               >
                 {link.label}
@@ -213,8 +213,8 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
           >
             <span
               className={`font-display text-[26px] md:text-[32px] lg:text-[40px] transition-all duration-350 ${activePage === 5
-                  ? "text-black translate-y-[-2px] font-medium"
-                  : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal"
+                ? "text-black translate-y-[-2px] font-medium"
+                : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal"
                 }`}
             >
               Say hi ↗

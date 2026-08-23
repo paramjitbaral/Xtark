@@ -22,7 +22,8 @@ interface ParticleUserData {
 type ParticleMesh = Mesh & { userData: ParticleUserData };
 
 interface ExplorationsProps {
-  isActive: boolean;
+  isActive?: boolean;
+  isViewActive?: boolean;
 }
 
 // Cohesive project imagery representing web development and digital experiences
@@ -481,7 +482,7 @@ export default function Explorations({ isActive }: ExplorationsProps) {
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: containerRef.current,
-              scroller: "#page-container-1",
+              scroller: document.getElementById("page-container-1") || window,
               start: "top top",
               end: "bottom bottom",
               scrub: 1.6, // Slightly faster response (down from 2.2)
@@ -677,56 +678,55 @@ export default function Explorations({ isActive }: ExplorationsProps) {
   }, []);
 
   return (
-    <div className="relative w-full select-none" style={{ background: "#000000" }}>
+    <div className="relative w-full select-none" style={{ background: "#000000", height: "700vh" }} ref={containerRef}>
       
-      {/* OGL canvas */}
-      <div className="fixed inset-0 w-full h-screen z-0 pointer-events-none">
-        <canvas ref={canvasRef} className="w-full h-full" style={{ display: "block" }} />
-      </div>
+      {/* Sticky container that stays on screen for 700vh */}
+      <div className="sticky top-0 w-full h-[100dvh] overflow-hidden">
+        {/* OGL canvas */}
+        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+          <canvas ref={canvasRef} className="w-full h-full" style={{ display: "block" }} />
+        </div>
 
-      {/* Floating typography overlays */}
-      <div className="fixed inset-0 pointer-events-none z-10 text-white">
-        {perspectives.map((perspective, index) => (
-          <div
-            key={index}
-            ref={(el) => {
-              textRefs.current[index] = el;
-            }}
-            className={`absolute text-center opacity-0 max-md:w-full ${getPositionClasses(perspective.position)}`}
-          >
-            <h2 className="text-5xl md:text-7xl font-light font-display italic leading-tight tracking-tight text-white drop-shadow-lg">
-              {perspective.title}
-            </h2>
-            {perspective.description && (
-              <p className="text-base md:text-xl font-light font-sans text-white/50 tracking-wide mt-2 drop-shadow-md">
-                {perspective.description}
-              </p>
-            )}
+        {/* Floating typography overlays */}
+        <div className="absolute inset-0 pointer-events-none z-10 text-white">
+          {perspectives.map((perspective, index) => (
+            <div
+              key={index}
+              ref={(el) => {
+                textRefs.current[index] = el;
+              }}
+              className={`absolute text-center opacity-0 max-md:w-full ${getPositionClasses(perspective.position)}`}
+            >
+              <h2 className="text-5xl md:text-7xl font-light font-display italic leading-tight tracking-tight text-white drop-shadow-lg">
+                {perspective.title}
+              </h2>
+              {perspective.description && (
+                <p className="text-base md:text-xl font-light font-sans text-white/50 tracking-wide mt-2 drop-shadow-md">
+                  {perspective.description}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Scroll indicator overlay */}
+        <div className="absolute bottom-8 right-8 z-10 pointer-events-none">
+          <div className="flex flex-col items-center gap-2 animate-bounce">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="text-white/60"
+            >
+              <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">Scroll</span>
           </div>
-        ))}
-      </div>
-
-      {/* Scroll indicator overlay */}
-      <div className="fixed bottom-8 right-8 z-10 pointer-events-none">
-        <div className="flex flex-col items-center gap-2 animate-bounce">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="text-white/60"
-          >
-            <path d="M12 5v14M19 12l-7 7-7-7" />
-          </svg>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">Scroll</span>
         </div>
       </div>
-
-      {/* Virtual Scroll Area inside the page container (reduced height to 700vh to speed up rotation) */}
-      <div ref={containerRef} style={{ height: "700vh" }} className="relative z-20 pointer-events-none" />
-
     </div>
   );
 }
