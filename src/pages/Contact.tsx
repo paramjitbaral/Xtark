@@ -87,13 +87,13 @@ export default function Contact({ isActive }: ContactProps) {
           </h2>
           
           <a
-            href="mailto:hello@michaelsmith.com"
+            href="mailto:xtark.tech@gmail.com"
             className="group relative inline-flex items-center justify-center rounded-full text-sm font-semibold px-8 py-4 bg-text-primary text-bg hover:scale-105 transition-all duration-300 overflow-hidden cursor-pointer shadow-lg shadow-black/20"
           >
             <span className="absolute inset-0 rounded-full accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 p-[1.5px]" style={{ margin: "-1px" }}>
               <span className="w-full h-full block rounded-full bg-bg" />
             </span>
-            <span className="group-hover:text-text-primary transition-colors duration-300 relative z-10">hello@michaelsmith.com</span>
+            <span className="group-hover:text-text-primary transition-colors duration-300 relative z-10">xtark.tech@gmail.com</span>
           </a>
         </div>
 
@@ -110,12 +110,12 @@ export default function Contact({ isActive }: ContactProps) {
 
         {/* Bottom Social list */}
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-stroke/40 pt-8">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6">
             {[
-              { label: "Twitter", url: "https://twitter.com" },
-              { label: "LinkedIn", url: "https://linkedin.com" },
-              { label: "Dribbble", url: "https://dribbble.com" },
-              { label: "GitHub", url: "https://github.com" },
+              { label: "Discord", url: "https://discord.gg/Fv7f2vmD7" },
+              { label: "WhatsApp", url: "https://wa.me/" },
+              { label: "Instagram", url: "https://www.instagram.com/xtark.tech" },
+              { label: "Gmail", url: "mailto:xtark.tech@gmail.com" },
             ].map((social) => (
               <a
                 key={social.label}
