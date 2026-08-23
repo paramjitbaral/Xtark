@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { AnimatePresence } from "framer-motion";
+import Lenis from "lenis";
+import "lenis/dist/lenis.css"; // Include Lenis basic styles if available, though typically optional
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
 
@@ -16,234 +18,215 @@ import Contact from "./pages/Contact";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [activePage, setActivePage] = useState(0);
+  const [activeView, setActiveView] = useState<0 | 1>(0); // 0 = Home, 1 = Main scrollable page
+  const [navPage, setNavPage] = useState(0); // Tracks current section for Navbar (0-7)
   
   const isTransitioningRef = useRef(false);
   const scrollCooldownRef = useRef(false);
 
-  // SVG Refs
+  // SVG Refs (kept for potential future use or if any stray animations need them)
   const svgOverlayRef = useRef<SVGSVGElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
 
-  const goToPage = (index: number) => {
-    if (index === activePage || isTransitioningRef.current) return;
-    triggerTransition(activePage, index);
+  // Lenis Smooth Scrolling Setup
+  useEffect(() => {
+    if (activeView !== 1) return;
+
+    const wrapper = document.getElementById("page-container-1");
+    const content = document.getElementById("page-content-1");
+
+    if (!wrapper || !content) return;
+
+    const lenis = new Lenis({
+      wrapper: wrapper,
+      content: content,
+      lerp: 0.08, // Adjust for buttery smoothness
+      wheelMultiplier: 1.1,
+      smoothWheel: true,
+    });
+
+    let rafId: number;
+
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    
+    rafId = requestAnimationFrame(raf);
+    (window as any).lenisInstance = lenis;
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      delete (window as any).lenisInstance;
+    };
+  }, [activeView]);
+
+  // Intersection Observer to track scroll position and update Navbar
+  useEffect(() => {
+    if (activeView !== 1) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = parseInt(entry.target.getAttribute("data-index") || "1", 10);
+            setNavPage(index);
+          }
+        });
+      },
+      {
+        root: document.getElementById("page-container-1"),
+        threshold: 0.3, // Trigger when 30% of the section is visible
+      }
+    );
+
+    const sections = document.querySelectorAll(".section-observer");
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [activeView]);
+
+  const handleNavClick = (index: number) => {
+    if (isTransitioningRef.current) return;
+    
+    if (index === 0) {
+      if (activeView === 1) {
+        triggerTransition(1, 0);
+      }
+    } else {
+      if (activeView === 0) {
+        triggerTransition(0, 1, index);
+      } else {
+        scrollToSection(index);
+      }
+    }
   };
 
-  const triggerTransition = (from: number, to: number) => {
-    if (to < 0 || to > 7 || from === to) return;
+  const scrollToSection = (index: number) => {
+    const targetSection = document.getElementById(`section-${index}`);
+    const lenis = (window as any).lenisInstance;
+    
+    if (lenis && targetSection) {
+      lenis.scrollTo(targetSection, { duration: 1.2 });
+      setNavPage(index);
+    } else {
+      const container = document.getElementById("page-container-1");
+      if (container && targetSection) {
+        container.scrollTo({
+          top: targetSection.offsetTop,
+          behavior: "smooth"
+        });
+        setNavPage(index);
+      }
+    }
+  };
 
+  const triggerTransition = (from: number, to: number, targetSectionIndex?: number) => {
+    if (from === to) return;
     isTransitioningRef.current = true;
 
     const fromEl = document.getElementById(`page-wrapper-${from}`);
     const toEl = document.getElementById(`page-wrapper-${to}`);
-    const svgOverlay = svgOverlayRef.current;
-    const path = pathRef.current;
-
+    
     if (!fromEl || !toEl) {
-      setActivePage(to);
+      setActiveView(to as 0 | 1);
+      if (to === 0) setNavPage(0);
       isTransitioningRef.current = false;
       return;
     }
 
     gsap.killTweensOf([fromEl, toEl]);
-    if (path) gsap.killTweensOf(path);
 
-    // Instantly scroll destination to top
-    const toContainer = document.getElementById(`page-container-${to}`);
-    if (toContainer) {
-      toContainer.scrollTop = 0;
+    // Instantly prepare destination
+    if (to === 1) {
+      // If heading to a specific section in View 1, jump there instantly before showing it
+      if (targetSectionIndex) {
+        const container = document.getElementById("page-container-1");
+        const targetSection = document.getElementById(`section-${targetSectionIndex}`);
+        if (container && targetSection) {
+          container.scrollTop = targetSection.offsetTop;
+          setNavPage(targetSectionIndex);
+        }
+      } else {
+        const container = document.getElementById("page-container-1");
+        if (container) container.scrollTop = 0;
+        setNavPage(1);
+      }
+    } else {
+      setNavPage(0);
     }
-
-    const swapPages = () => {
-      gsap.set(fromEl, { display: "none" });
-      gsap.set(toEl, { zIndex: 10 });
-    };
 
     const tl = gsap.timeline({
       onComplete: () => {
-        // Reset properties and hide the outgoing page
-        gsap.set(fromEl, { display: "none", clearProps: "scale,opacity,clipPath,transform,transformOrigin" });
+        gsap.set(fromEl, { display: "none", clearProps: "scale,opacity,clipPath,transform,transformOrigin,zIndex" });
         gsap.set(toEl, { clearProps: "zIndex,transformOrigin,transform,scale,opacity" });
-        if (path) gsap.set(path, { attr: { d: "M 0 100 V 100 Q 50 100 100 100 V 100 z" } });
-        if (svgOverlay) gsap.set(svgOverlay, { visibility: "hidden", pointerEvents: "none" });
         
-        setActivePage(to);
+        setActiveView(to as 0 | 1);
         isTransitioningRef.current = false;
       }
     });
 
     const isForward = to > from;
-    const transitionType = Math.min(from, to);
 
-    // Swap between 5 unique transition types based on target route limits
-    if (transitionType === 0) {
-      // ==========================================
-      // 1. SKEWED EDITORIAL CARD SLIDE (Home <-> Work)
-      // ==========================================
-      if (isForward) {
-        gsap.set(toEl, { display: "block", zIndex: 10, xPercent: 100, rotate: -6, scale: 1.08, transformOrigin: "50% 50%" });
-        gsap.set(fromEl, { zIndex: 5, transformOrigin: "50% 50%" });
+    // SKEWED EDITORIAL CARD SLIDE (Home <-> Main)
+    if (isForward) {
+      gsap.set(toEl, { display: "block", zIndex: 10, xPercent: 100, rotate: -6, scale: 1.08, transformOrigin: "50% 50%" });
+      gsap.set(fromEl, { zIndex: 5, transformOrigin: "50% 50%" });
 
-        tl.to(fromEl, { xPercent: -100, rotate: 6, scale: 0.9, duration: 0.85, ease: "power3.inOut" })
-          .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
-      } else {
-        gsap.set(toEl, { display: "block", zIndex: 5, xPercent: -100, rotate: 6, scale: 0.9, transformOrigin: "50% 50%" });
-        gsap.set(fromEl, { zIndex: 10, xPercent: 0, rotate: 0, scale: 1, transformOrigin: "50% 50%" });
-
-        tl.to(fromEl, { xPercent: 100, rotate: -6, scale: 1.08, duration: 0.85, ease: "power3.inOut" })
-          .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
-      }
-
-    } else if (transitionType === 1 && svgOverlay && path) {
-      // ==========================================
-      // 2. LIQUID CURVED WAVE (Work <-> About)
-      // ==========================================
-      gsap.set(svgOverlay, { visibility: "visible", pointerEvents: "auto" });
-      gsap.set(toEl, { display: "block", zIndex: 1 });
-      gsap.set(fromEl, { zIndex: 5 });
-
-      if (isForward) {
-        gsap.set(path, { attr: { d: "M 0 100 V 100 Q 50 100 100 100 V 100 z" } });
-        tl.to(path, { attr: { d: "M 0 100 V 50 Q 50 0 100 50 V 100 z" }, duration: 0.35, ease: "sine.in" })
-          .to(path, { attr: { d: "M 0 100 V 0 Q 50 0 100 0 V 100 z" }, duration: 0.25, ease: "sine.out", onComplete: () => {
-            swapPages();
-            gsap.set(path, { attr: { d: "M 0 0 V 100 Q 50 100 100 100 V 0 z" } });
-          } })
-          .to(path, { attr: { d: "M 0 0 V 50 Q 50 100 100 50 V 0 z" }, duration: 0.35, ease: "sine.in", delay: 0.05 })
-          .to(path, { attr: { d: "M 0 0 V 0 Q 50 0 100 0 V 0 z" }, duration: 0.25, ease: "sine.out" });
-      } else {
-        gsap.set(path, { attr: { d: "M 0 0 V 0 Q 50 0 100 0 V 0 z" } });
-        tl.to(path, { attr: { d: "M 0 0 V 50 Q 50 100 100 50 V 0 z" }, duration: 0.35, ease: "sine.in" })
-          .to(path, { attr: { d: "M 0 0 V 100 Q 50 100 100 100 V 0 z" }, duration: 0.25, ease: "sine.out", onComplete: () => {
-            swapPages();
-            gsap.set(path, { attr: { d: "M 0 100 V 0 Q 50 0 100 0 V 100 z" } });
-          } })
-          .to(path, { attr: { d: "M 0 100 V 50 Q 50 0 100 50 V 100 z" }, duration: 0.35, ease: "sine.in", delay: 0.05 })
-          .to(path, { attr: { d: "M 0 100 V 100 Q 50 100 100 100 V 100 z" }, duration: 0.25, ease: "sine.out" });
-      }
-
-    } else if (transitionType === 2) {
-      // ==========================================
-      // 3. CURVED IRIS WIPE (About <-> Journal)
-      // ==========================================
-      if (isForward) {
-        gsap.set(toEl, { display: "block", zIndex: 10, clipPath: "circle(0% at 50% 50%)" });
-        gsap.set(fromEl, { zIndex: 5 });
-
-        tl.to(toEl, { clipPath: "circle(150% at 50% 50%)", duration: 0.8, ease: "power2.inOut" });
-      } else {
-        gsap.set(toEl, { display: "block", zIndex: 5 });
-        gsap.set(fromEl, { zIndex: 10, clipPath: "circle(150% at 50% 50%)" });
-
-        tl.to(fromEl, { clipPath: "circle(0% at 50% 50%)", duration: 0.8, ease: "power2.inOut" });
-      }
-
-    } else if (transitionType === 3) {
-      // ==========================================
-      // 4. BI-DIRECTIONAL EDITORIAL SLIDE (Journal <-> Explorations)
-      // ==========================================
-      if (isForward) {
-        gsap.set(toEl, { display: "block", zIndex: 10, xPercent: 100 });
-        gsap.set(fromEl, { zIndex: 5 });
-
-        tl.to(fromEl, { xPercent: -30, duration: 0.7, ease: "power3.inOut" })
-          .to(toEl, { xPercent: 0, duration: 0.7, ease: "power3.inOut" }, "<");
-      } else {
-        gsap.set(toEl, { display: "block", zIndex: 5, xPercent: -30 });
-        gsap.set(fromEl, { zIndex: 10, xPercent: 0 });
-
-        tl.to(fromEl, { xPercent: 100, duration: 0.7, ease: "power3.inOut" })
-          .to(toEl, { xPercent: 0, duration: 0.7, ease: "power3.inOut" }, "<");
-      }
-
-    } else if (transitionType === 4) {
-      // ==========================================
-      // 5. CURVED CORNER WIPE (Calculator <-> HowWeWork)
-      // ==========================================
-      const isMobile = window.innerWidth < 640;
-      const dur1 = isMobile ? 0.45 : 1.0;
-      const dur2 = isMobile ? 0.35 : 0.8;
-
-      if (isForward) {
-        gsap.set(toEl, { display: "block", zIndex: 10, clipPath: "polygon(100% 100%, 100% 100%, 100% 100%)" });
-        gsap.set(fromEl, { zIndex: 5 });
-
-        tl.to(toEl, { clipPath: "polygon(-30% 130%, 130% -30%, 130% 130%)", duration: dur1, ease: "power2.in" })
-          .to(toEl, { clipPath: "polygon(-30% -30%, 130% -30%, 130% 130%, -30% 130%)", duration: dur2, ease: "power2.out" });
-      } else {
-        gsap.set(toEl, { display: "block", zIndex: 5 });
-        gsap.set(fromEl, { zIndex: 10, clipPath: "polygon(-30% -30%, 130% -30%, 130% 130%, -30% 130%)" });
-
-        tl.to(fromEl, { clipPath: "polygon(-30% 130%, 130% -30%, 130% 130%)", duration: dur1, ease: "power2.in" })
-          .to(fromEl, { clipPath: "polygon(100% 100%, 100% 100%, 100% 100%)", duration: dur2, ease: "power2.out" });
-      }
-
+      tl.to(fromEl, { xPercent: -100, rotate: 6, scale: 0.9, duration: 0.85, ease: "power3.inOut" })
+        .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
     } else {
-      // ==========================================
-      // 6. SCALE FADE (HowWeWork <-> Journal / fallback)
-      // ==========================================
-      const isMobile = window.innerWidth < 640;
-      const dur = isMobile ? 0.3 : 0.5;
-      const overlap = isMobile ? "<0.05" : "<0.15";
-      
-      if (isForward) {
-        gsap.set(toEl, { display: "block", zIndex: 10, opacity: 0, scale: 0.95 });
-        gsap.set(fromEl, { zIndex: 5 });
+      gsap.set(toEl, { display: "block", zIndex: 5, xPercent: -100, rotate: 6, scale: 0.9, transformOrigin: "50% 50%" });
+      gsap.set(fromEl, { zIndex: 10, xPercent: 0, rotate: 0, scale: 1, transformOrigin: "50% 50%" });
 
-        tl.to(fromEl, { opacity: 0, scale: 1.05, duration: dur, ease: "power2.inOut" })
-          .to(toEl, { opacity: 1, scale: 1, duration: dur, ease: "power2.inOut" }, overlap);
-      } else {
-        gsap.set(toEl, { display: "block", zIndex: 5, opacity: 0, scale: 1.05 });
-        gsap.set(fromEl, { zIndex: 10, opacity: 1, scale: 1 });
-
-        tl.to(fromEl, { opacity: 0, scale: 0.95, duration: dur, ease: "power2.inOut" })
-          .to(toEl, { opacity: 1, scale: 1, duration: dur, ease: "power2.inOut" }, overlap);
-      }
+      tl.to(fromEl, { xPercent: 100, rotate: -6, scale: 1.08, duration: 0.85, ease: "power3.inOut" })
+        .to(toEl, { xPercent: 0, rotate: 0, scale: 1, duration: 0.85, ease: "power3.inOut" }, "<");
     }
   };
 
+  // Wheel tracking specifically for navigating between Home (0) and Main (1) when at top/bottom
   useEffect(() => {
     if (isLoading) return;
 
     const handleWheel = (e: WheelEvent) => {
       if (isTransitioningRef.current || scrollCooldownRef.current) return;
 
-      const currentContainer = document.getElementById(`page-container-${activePage}`);
+      const currentContainer = document.getElementById(`page-container-${activeView}`);
       if (!currentContainer) return;
 
       const deltaY = e.deltaY;
 
       if (deltaY > 0) {
         // Scroll Down
-        const isAtBottom = currentContainer.scrollTop + currentContainer.clientHeight >= currentContainer.scrollHeight - 2;
-        if (isAtBottom && activePage < 7) {
-          e.preventDefault();
-          scrollCooldownRef.current = true;
-          triggerTransition(activePage, activePage + 1);
-          setTimeout(() => {
-            scrollCooldownRef.current = false;
-          }, 1100);
+        if (activeView === 0) {
+          const isAtBottom = currentContainer.scrollTop + currentContainer.clientHeight >= currentContainer.scrollHeight - 2;
+          if (isAtBottom) {
+            e.preventDefault();
+            scrollCooldownRef.current = true;
+            triggerTransition(0, 1, 1);
+            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
+          }
         }
       } else {
         // Scroll Up
-        const isAtTop = currentContainer.scrollTop <= 1;
-        if (isAtTop && activePage > 0) {
-          e.preventDefault();
-          scrollCooldownRef.current = true;
-          triggerTransition(activePage, activePage - 1);
-          setTimeout(() => {
-            scrollCooldownRef.current = false;
-          }, 1100);
+        if (activeView === 1) {
+          const isAtTop = currentContainer.scrollTop <= 1;
+          if (isAtTop) {
+            e.preventDefault();
+            scrollCooldownRef.current = true;
+            triggerTransition(1, 0);
+            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
+          }
         }
       }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [isLoading, activePage]);
+  }, [isLoading, activeView]);
 
-  // Touch swipes support
+  // Touch swipes support for transition
   useEffect(() => {
     if (isLoading) return;
 
@@ -256,33 +239,31 @@ export default function App() {
     const handleTouchEnd = (e: TouchEvent) => {
       if (isTransitioningRef.current || scrollCooldownRef.current) return;
 
-      const currentContainer = document.getElementById(`page-container-${activePage}`);
+      const currentContainer = document.getElementById(`page-container-${activeView}`);
       if (!currentContainer) return;
 
       const deltaY = touchStartY - e.changedTouches[0].clientY;
-
-      // Require a minimum swipe distance to prevent accidental transitions
       if (Math.abs(deltaY) < 50) return;
 
       if (deltaY > 0) {
         // Swipe Up -> Scroll Down
-        const isAtBottom = currentContainer.scrollTop + currentContainer.clientHeight >= currentContainer.scrollHeight - 2;
-        if (isAtBottom && activePage < 7) {
-          scrollCooldownRef.current = true;
-          triggerTransition(activePage, activePage + 1);
-          setTimeout(() => {
-            scrollCooldownRef.current = false;
-          }, 1100);
+        if (activeView === 0) {
+          const isAtBottom = currentContainer.scrollTop + currentContainer.clientHeight >= currentContainer.scrollHeight - 2;
+          if (isAtBottom) {
+            scrollCooldownRef.current = true;
+            triggerTransition(0, 1, 1);
+            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
+          }
         }
       } else {
         // Swipe Down -> Scroll Up
-        const isAtTop = currentContainer.scrollTop <= 1;
-        if (isAtTop && activePage > 0) {
-          scrollCooldownRef.current = true;
-          triggerTransition(activePage, activePage - 1);
-          setTimeout(() => {
-            scrollCooldownRef.current = false;
-          }, 1100);
+        if (activeView === 1) {
+          const isAtTop = currentContainer.scrollTop <= 1;
+          if (isAtTop) {
+            scrollCooldownRef.current = true;
+            triggerTransition(1, 0);
+            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
+          }
         }
       }
     };
@@ -294,7 +275,7 @@ export default function App() {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [isLoading, activePage]);
+  }, [isLoading, activeView]);
 
   return (
     <>
@@ -305,47 +286,71 @@ export default function App() {
       </AnimatePresence>
       
       <div className="relative bg-bg min-h-screen text-text-primary selection:bg-white selection:text-black overflow-hidden w-screen h-screen">
-          <Navbar activePage={activePage} goToPage={goToPage} />
+          <Navbar activePage={navPage} goToPage={handleNavClick} />
           
-          {[
-            { component: <Home goToPage={goToPage} isActive={activePage === 0} />, index: 0 },
-            { component: <Explorations isActive={activePage === 1} />, index: 1 },
-            { component: <Work isActive={activePage === 2} />, index: 2 },
-            { component: <About />, index: 3 },
-            { component: <Calculator />, index: 4 },
-            { component: <HowWeWork />, index: 5 },
-            { component: <Journal />, index: 6 },
-            { component: <Contact isActive={activePage === 7} />, index: 7 },
-          ].map((page) => (
+          {/* View 0: Home */}
+          <div
+            id="page-wrapper-0"
+            className="fixed inset-0 w-full h-full"
+            style={{
+              zIndex: activeView === 0 ? 10 : 1,
+              display: activeView === 0 ? "block" : "none",
+            }}
+          >
             <div
-              key={page.index}
-              id={`page-wrapper-${page.index}`}
-              className="fixed inset-0 w-full h-full"
-              style={{
-                zIndex: page.index === activePage ? 10 : 1,
-                display: page.index === activePage ? "block" : "none",
-              }}
+              id="page-container-0"
+              className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth overscroll-none"
             >
-              <div
-                id={`page-container-${page.index}`}
-                className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth overscroll-none"
-              >
-                {page.component}
+              <Home goToPage={handleNavClick} isActive={navPage === 0} />
+            </div>
+          </div>
+
+          {/* View 1: Main Scrollable Page (Sections 1-7) */}
+          <div
+            id="page-wrapper-1"
+            className="fixed inset-0 w-full h-full bg-black"
+            style={{
+              zIndex: activeView === 1 ? 10 : 1,
+              display: activeView === 1 ? "block" : "none",
+            }}
+          >
+            <div
+              id="page-container-1"
+              className="w-full h-full overflow-y-auto overflow-x-hidden scroll-smooth overscroll-none"
+            >
+              <div id="page-content-1" className="w-full min-h-full">
+                <section id="section-1" data-index="1" className="w-full min-h-[100dvh] relative section-observer">
+                  <Explorations isActive={navPage === 1} />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
+                </section>
+                <section id="section-2" data-index="2" className="w-full min-h-[100dvh] relative section-observer">
+                  <Work isActive={navPage === 2} />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
+                </section>
+                <section id="section-3" data-index="3" className="w-full min-h-[100dvh] relative section-observer">
+                  <About />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
+                </section>
+                <section id="section-4" data-index="4" className="w-full min-h-[100dvh] relative section-observer">
+                  <Calculator />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
+                </section>
+                <section id="section-5" data-index="5" className="w-full min-h-[100dvh] relative section-observer">
+                  <HowWeWork />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
+                </section>
+                <section id="section-6" data-index="6" className="w-full min-h-[100dvh] relative section-observer">
+                  <Journal />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-50" />
+                </section>
+                <section id="section-7" data-index="7" className="w-full min-h-[100dvh] relative section-observer">
+                  <Contact isActive={navPage === 7} />
+                </section>
               </div>
             </div>
-          ))}
+          </div>
 
-          {/* Global Mobile Scroll Indicator */}
-          {activePage !== 0 && activePage !== 2 && activePage !== 7 && (
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex md:hidden flex-col items-center justify-center z-40 pointer-events-none opacity-60">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-white/80 mb-1">Scroll Down</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/80 animate-bounce">
-                <path d="M12 5v14M19 12l-7 7-7-7"/>
-              </svg>
-            </div>
-          )}
-
-          {/* Snappy Liquid Wave Transition Canvas Overlay */}
+          {/* SVG Overlay (Kept for compatibility, hidden) */}
           <svg
             ref={svgOverlayRef}
             className="fixed inset-0 w-full h-full pointer-events-none z-[50] invisible"

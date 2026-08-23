@@ -237,9 +237,28 @@ export default function Work({ isActive }: { isActive?: boolean }) {
     const handleScroll = (e: WheelEvent) => {
       const deltaY = e.deltaY;
 
+      // FIX: Only hijack the wheel event if the Work section is perfectly aligned in the viewport.
+      // This prevents the page from getting "stuck" when scrolling down from Explorations.
+      const workContainer = document.getElementById("section-2");
+      const pageContainer = document.getElementById("page-container-1");
+      
+      if (workContainer && pageContainer) {
+        const rect = workContainer.getBoundingClientRect();
+        
+        // If the section is not fully taking up the viewport (allow 40px tolerance), allow native scroll
+        if (Math.abs(rect.top) > 40) {
+          return; 
+        }
+
+        // Snap perfectly to top if we are slightly off, to ensure the full 100vh canvas is aligned
+        if (Math.abs(rect.top) > 1 && !isAnimatingRef.current) {
+          pageContainer.scrollTop = workContainer.offsetTop;
+        }
+      }
+
       if (isAnimatingRef.current) {
         e.preventDefault();
-        e.stopImmediatePropagation(); // Block other window listeners (like App.tsx)
+        e.stopImmediatePropagation(); // Block other window listeners
         return;
       }
 
@@ -247,7 +266,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
         // Scroll Down (Next Project)
         if (activeIndexRef.current < projects.length - 1) {
           e.preventDefault();
-          e.stopImmediatePropagation(); // Block other window listeners (like App.tsx)
+          e.stopImmediatePropagation();
           if (scrollTimeout) clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(() => {
             handleNextSlide();
@@ -258,7 +277,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
         // Scroll Up (Previous Project)
         if (activeIndexRef.current > 0) {
           e.preventDefault();
-          e.stopImmediatePropagation(); // Block other window listeners (like App.tsx)
+          e.stopImmediatePropagation();
           if (scrollTimeout) clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(() => {
             handlePrevSlide();
@@ -275,9 +294,19 @@ export default function Work({ isActive }: { isActive?: boolean }) {
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
+      const workContainer = document.getElementById("section-2");
+      const pageContainer = document.getElementById("page-container-1");
+      
+      if (workContainer && pageContainer) {
+        const rect = workContainer.getBoundingClientRect();
+        if (Math.abs(rect.top) > 40) return;
+        
+        if (Math.abs(rect.top) > 1 && !isAnimatingRef.current) {
+          pageContainer.scrollTop = workContainer.offsetTop;
+        }
+      }
+
       if (isAnimatingRef.current) {
-        // Allow event to bubble if animating, so it doesn't get completely blocked,
-        // but typically we stop it. To be safe, we just return if animating.
         return;
       }
 
@@ -287,6 +316,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
       if (deltaY > 0) {
         // Swipe Up (Next Project)
         if (activeIndexRef.current < projects.length - 1) {
+          if (e.cancelable) e.preventDefault();
           e.stopImmediatePropagation(); // Block App.tsx from changing page
           if (scrollTimeout) clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(() => {
@@ -297,6 +327,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
       } else {
         // Swipe Down (Previous Project)
         if (activeIndexRef.current > 0) {
+          if (e.cancelable) e.preventDefault();
           e.stopImmediatePropagation(); // Block App.tsx from changing page
           if (scrollTimeout) clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(() => {
