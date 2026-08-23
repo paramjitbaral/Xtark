@@ -328,7 +328,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
         .work-page-scope {
           position: relative;
           width: 100%;
-          height: 100vh;
+          height: 100%;
           overflow: hidden;
           background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.06), transparent 35%), #0f0f10;
           font-family: "Inter", sans-serif;
@@ -345,7 +345,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
         .work-page-scope .container {
           position: relative;
           width: 100%;
-          height: 100vh;
+          height: 100%;
           overflow: hidden;
         }
 
@@ -353,7 +353,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
           position: absolute;
           top: 2vh; /* Moved higher up */
           width: 100vw;
-          height: 100vh;
+          height: 100%;
           overflow: hidden;
           perspective: 300px;
           perspective-origin: 50% 50%;
@@ -479,7 +479,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
 
       {/* Ultra-light Mobile View (Native CSS Horizontal Scroll) */}
       <div 
-        className="sm:hidden flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory h-full w-full items-center px-8 gap-5 hide-scrollbar touch-pan-x" 
+        className="sm:hidden flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory h-full w-full items-center px-8 gap-5 hide-scrollbar" 
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <style>{`
