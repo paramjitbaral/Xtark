@@ -255,12 +255,55 @@ export default function Work({ isActive }: { isActive?: boolean }) {
       }
     };
 
+    let touchStartY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (isAnimatingRef.current) {
+        // Allow event to bubble if animating, so it doesn't get completely blocked,
+        // but typically we stop it. To be safe, we just return if animating.
+        return;
+      }
+      
+      const deltaY = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(deltaY) < 50) return; // Ignore accidental tiny swipes
+
+      if (deltaY > 0) {
+        // Swipe Up (Next Project)
+        if (activeIndexRef.current < projects.length - 1) {
+          e.stopImmediatePropagation(); // Block App.tsx from changing page
+          if (scrollTimeout) clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            handleNextSlide();
+            activeIndexRef.current += 1;
+          }, 30);
+        }
+      } else {
+        // Swipe Down (Previous Project)
+        if (activeIndexRef.current > 0) {
+          e.stopImmediatePropagation(); // Block App.tsx from changing page
+          if (scrollTimeout) clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            handlePrevSlide();
+            activeIndexRef.current -= 1;
+          }, 30);
+        }
+      }
+    };
+
     // Attach wheel listener to the entire window with passive: false to allow e.preventDefault()
     window.addEventListener("wheel", handleScroll, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: false }); // Needs to be non-passive if we want to prevent default, but stopPropagation works regardless.
 
     return () => {
       if (scrollTimeout) clearTimeout(scrollTimeout);
       window.removeEventListener("wheel", handleScroll);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [isActive]);
 

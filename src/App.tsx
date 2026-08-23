@@ -253,6 +253,9 @@ export default function App() {
 
       const deltaY = touchStartY - e.changedTouches[0].clientY;
 
+      // Require a minimum swipe distance to prevent accidental transitions
+      if (Math.abs(deltaY) < 50) return;
+
       if (deltaY > 0) {
         // Swipe Up -> Scroll Down
         const isAtBottom = currentContainer.scrollTop + currentContainer.clientHeight >= currentContainer.scrollHeight - 2;
