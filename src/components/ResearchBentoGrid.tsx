@@ -61,7 +61,6 @@ function ArrowCursor({
   delay = 0,
   active,
   targetLeft,
-  targetTop,
 }: {
   className?: string;
   label: string;
@@ -69,7 +68,6 @@ function ArrowCursor({
   delay?: number;
   active?: boolean;
   targetLeft?: string;
-  targetTop?: string;
 }) {
   const reduceMotion = useReducedMotion();
 
