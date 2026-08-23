@@ -221,7 +221,6 @@ export default function Work({ isActive }: { isActive?: boolean }) {
 
     const handleScroll = (e: WheelEvent) => {
       const deltaY = e.deltaY;
-      if (Math.abs(deltaY) < 10) return;
 
       if (isAnimatingRef.current) {
         e.preventDefault();

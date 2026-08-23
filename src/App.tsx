@@ -205,7 +205,6 @@ export default function App() {
       if (!currentContainer) return;
 
       const deltaY = e.deltaY;
-      if (Math.abs(deltaY) < 45) return;
 
       if (deltaY > 0) {
         // Scroll Down
@@ -253,7 +252,6 @@ export default function App() {
       if (!currentContainer) return;
 
       const deltaY = touchStartY - e.changedTouches[0].clientY;
-      if (Math.abs(deltaY) < 60) return;
 
       if (deltaY > 0) {
         // Swipe Up -> Scroll Down
