@@ -29,6 +29,11 @@ export default function Work({ isActive }: { isActive?: boolean }) {
   useEffect(() => {
     if (!isActive || !sliderRef.current) return;
 
+    // Mobile Optimization: Entirely disable GSAP stacking logic on mobile screens
+    if (window.innerWidth < 640) {
+      return;
+    }
+
     const splitText = (selector: string) => {
       const elements = sliderRef.current?.querySelectorAll(selector);
       if (!elements) return;
@@ -458,7 +463,7 @@ export default function Work({ isActive }: { isActive?: boolean }) {
         }
       `}</style>
 
-      <div className="container">
+      <div className="container hidden sm:block">
         <div ref={sliderRef} className="slider">
           {[...projects].reverse().map((project, idx) => (
             <article key={idx} className="card">
@@ -471,10 +476,41 @@ export default function Work({ isActive }: { isActive?: boolean }) {
           ))}
         </div>
       </div>
+
+      {/* Ultra-light Mobile View (Native CSS Horizontal Scroll) */}
+      <div 
+        className="sm:hidden flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory h-full w-full items-center px-8 gap-5 hide-scrollbar touch-pan-x" 
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <style>{`
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+        {[...projects].map((project, idx) => (
+          <article 
+            key={idx} 
+            className="flex-none w-[80vw] h-[58vh] rounded-[22px] overflow-hidden relative snap-center bg-black shadow-2xl"
+          >
+            <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/90" />
+            <div className="absolute bottom-8 left-0 right-0 text-center text-[#f4eee7] px-4">
+              <h1 className="font-display text-[42px] uppercase font-semibold leading-[0.9] tracking-[-0.04em] mb-2">{project.title}</h1>
+              <p className="text-[11px] uppercase tracking-[0.18em] opacity-80">{project.subtitle}</p>
+            </div>
+          </article>
+        ))}
+      </div>
       
       {/* Floating Action Hint */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 uppercase tracking-widest text-xs pointer-events-none z-20">
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 uppercase tracking-widest text-[10px] pointer-events-none z-20 hidden sm:block">
         Scroll to Browse
+      </div>
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 uppercase tracking-widest text-[10px] pointer-events-none z-20 sm:hidden flex items-center gap-2">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse">
+          <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+        </svg>
+        Swipe to Browse
       </div>
     </div>
   );

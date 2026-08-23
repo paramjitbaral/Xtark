@@ -327,6 +327,16 @@ export default function App() {
             </div>
           ))}
 
+          {/* Global Mobile Scroll Indicator */}
+          {activePage !== 0 && activePage !== 2 && activePage !== 7 && (
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex md:hidden flex-col items-center justify-center z-40 pointer-events-none opacity-60">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-white/80 mb-1">Scroll Down</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/80 animate-bounce">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+              </svg>
+            </div>
+          )}
+
           {/* Snappy Liquid Wave Transition Canvas Overlay */}
           <svg
             ref={svgOverlayRef}
