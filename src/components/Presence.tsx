@@ -29,7 +29,7 @@ const platforms: PlatformCardProps[] = [
   {
     name: "LinkedIn",
     subtitle: "Professional Profile",
-    url: "https://www.linkedin.com",
+    url: "https://www.linkedin.com/in/xtark-tech-0447a7430",
     icon: (
       <div className="w-8 h-8 rounded-md bg-[#0a66c2] flex items-center justify-center">
         <FaLinkedin className="w-5 h-5 text-white" />
