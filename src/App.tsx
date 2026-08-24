@@ -37,8 +37,9 @@ export default function App() {
     const lenis = new Lenis({
       wrapper: wrapper,
       content: content,
-      lerp: 0.08,
+      lerp: 0.12, // Increased from 0.08 to make scroll feel much less sluggish/sticky
       wheelMultiplier: 1.1,
+      touchMultiplier: 1.4, // Snappy but controlled touch swipe ratio
       smoothWheel: true,
       syncTouch: true, // Smooths touch scroll momentum on mobile to prevent "flying away"
     });
