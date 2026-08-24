@@ -528,7 +528,7 @@ export default function Explorations({ isActive }: ExplorationsProps) {
           tl.to(
             cylinderRef.current.rotation,
             {
-              y: "+=9.42", // 1.5 full rotations (reduced from 4.5)
+              y: "+=7.85", // 1.25 full rotations (slowed down slightly)
               duration: 8.5,
               ease: "none",
             },
