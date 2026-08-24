@@ -113,25 +113,33 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
       {/* Top Left Logo */}
       <div
         onClick={() => handleLinkClick(0)}
-        className="fixed top-6 left-6 md:top-8 md:left-8 z-[150] flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
+        className="fixed top-6 left-6 md:top-8 md:left-8 z-[150] flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300 mix-blend-difference text-white"
       >
-        <img src="/2.png" alt="Logo Icon" className="h-6 md:h-7 object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]" />
-        <img src="/1.png" alt="Logo Text" className="h-5 md:h-6 object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]" />
+        <img 
+          src="/2.png" 
+          alt="Logo Icon" 
+          className="h-6 md:h-7 object-contain" 
+        />
+        <img 
+          src="/1.png" 
+          alt="Logo Text" 
+          className="h-5 md:h-6 object-contain" 
+        />
       </div>
 
       {/* Top Right Widget (Time/Location) - Hidden on mobile to prevent overlapping */}
-      <div className="hidden md:flex fixed top-8 right-[95px] z-[150] items-center gap-4 text-white">
-        <div className="flex items-center gap-2 font-sans text-[12px] uppercase tracking-[0.1em] font-medium select-none drop-shadow-md">
+      <div className="hidden md:flex fixed top-8 right-[95px] z-[150] items-center gap-4 text-white mix-blend-difference">
+        <div className="flex items-center gap-2 font-sans text-[12px] uppercase tracking-[0.1em] font-medium select-none">
           <span className="flex items-center gap-1.5">
             <span>MUMBAI</span>
-            <span className="w-1 h-1 bg-white/50 rounded-full"></span>
+            <span className="w-1 h-1 rounded-full bg-white/50"></span>
             <span>{time}</span>
           </span>
         </div>
       </div>
 
       {/* Right Curved Sidebar (Hello Monday) */}
-      <div className="curved-sidebar-container">
+      <div className="curved-sidebar-container mix-blend-difference md:mix-blend-normal">
         {/* Background SVG for the sleek curve (starts at 0 width at top/bottom, bulges in middle) */}
         <svg
           className="hidden md:block absolute inset-0 w-full h-full pointer-events-none z-0"
@@ -157,7 +165,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
               <span className="absolute w-4 h-[1.5px] bg-black md:bg-white -rotate-45 rounded-full transition-all duration-300" />
             </div>
           ) : (
-            /* Custom Hamburger Lines (White on mobile when closed, Black on desktop) */
+            /* Custom Hamburger Lines (Auto-invert via mix-blend-difference on mobile, solid black on desktop) */
             <>
               <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
               <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
