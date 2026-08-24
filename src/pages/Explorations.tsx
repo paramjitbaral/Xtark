@@ -678,9 +678,9 @@ export default function Explorations({ isActive }: ExplorationsProps) {
   }, []);
 
   return (
-    <div className="relative w-full select-none" style={{ background: "#000000", height: "700vh" }} ref={containerRef}>
+    <div className="relative w-full select-none" style={{ background: "#000000", height: "400vh" }} ref={containerRef}>
       
-      {/* Sticky container that stays on screen for 700vh */}
+      {/* Sticky container that stays on screen for 400vh */}
       <div className="sticky top-0 w-full h-[100dvh] overflow-hidden">
         {/* OGL canvas */}
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
