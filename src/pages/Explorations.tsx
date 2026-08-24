@@ -528,20 +528,23 @@ export default function Explorations({ isActive }: ExplorationsProps) {
           tl.to(
             cylinderRef.current.rotation,
             {
-              y: "+=28.27",
+              y: "+=9.42", // 1.5 full rotations (reduced from 4.5)
               duration: 8.5,
               ease: "none",
             },
             0
           );
 
-          // Configure text visibility timelines with higher scrub (1.1s) for smooth fades
+          // Configure text visibility timelines: shifted earlier (0% to 80%) so last one doesn't get missed
+          const totalTextRange = 80; // Compact text fades into the first 80% of scroll
+          const sectionDuration = totalTextRange / perspectives.length; // 20% each
+
           textRefs.current.forEach((textEl, idx) => {
             if (!textEl) return;
 
-            const sectionDuration = 100 / perspectives.length;
+            const isLast = idx === perspectives.length - 1;
             const start = idx * sectionDuration;
-            const end = (idx + 1) * sectionDuration;
+            const end = isLast ? 100 : (idx + 1) * sectionDuration; // Last runs to 100%
 
             const textTimeline = gsap.timeline({
               scrollTrigger: {
@@ -549,30 +552,50 @@ export default function Explorations({ isActive }: ExplorationsProps) {
                 scroller: "#page-container-1",
                 start: `${start}% top`,
                 end: `${end}% top`,
-                scrub: 1.1, // Faster fade updates (down from 1.5)
+                scrub: 1.1,
               },
             });
 
-            textTimeline
-              .fromTo(
-                textEl,
-                { opacity: 0 },
-                {
+            if (isLast) {
+              // Last text fades in earlier and stays fully visible until the section ends
+              textTimeline
+                .fromTo(
+                  textEl,
+                  { opacity: 0 },
+                  {
+                    opacity: 1,
+                    duration: 0.25,
+                    ease: "cinematicSmooth",
+                  }
+                )
+                .to(textEl, {
                   opacity: 1,
+                  duration: 0.75,
+                  ease: "none",
+                });
+            } else {
+              // Other texts fade in, hold, and fade out before the next one starts
+              textTimeline
+                .fromTo(
+                  textEl,
+                  { opacity: 0 },
+                  {
+                    opacity: 1,
+                    duration: 0.2,
+                    ease: "cinematicSmooth",
+                  }
+                )
+                .to(textEl, {
+                  opacity: 1,
+                  duration: 0.6,
+                  ease: "none",
+                })
+                .to(textEl, {
+                  opacity: 0,
                   duration: 0.2,
                   ease: "cinematicSmooth",
-                }
-              )
-              .to(textEl, {
-                opacity: 1,
-                duration: 0.6,
-                ease: "none",
-              })
-              .to(textEl, {
-                opacity: 0,
-                duration: 0.2,
-                ease: "cinematicSmooth",
-              });
+                });
+            }
           });
           
           // Create WebGL orbit lines/particles
@@ -678,9 +701,9 @@ export default function Explorations({ isActive }: ExplorationsProps) {
   }, []);
 
   return (
-    <div className="relative w-full select-none" style={{ background: "#000000", height: "400vh" }} ref={containerRef}>
+    <div className="relative w-full select-none" style={{ background: "#000000", height: "250vh" }} ref={containerRef}>
       
-      {/* Sticky container that stays on screen for 400vh */}
+      {/* Sticky container that stays on screen for 250vh */}
       <div className="sticky top-0 w-full h-[100dvh] overflow-hidden">
         {/* OGL canvas */}
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
