@@ -42,69 +42,45 @@ export default function Calculator() {
   const sliderPercentage = ((pages - 1) / (20 - 1)) * 100;
 
   return (
-    <div className="w-full min-h-screen bg-bg flex items-start md:items-center justify-center py-24 overflow-y-auto">
+    <div className="w-full min-h-screen bg-bg lg:bg-[#fcfcfc] flex items-center justify-center py-20 md:py-28 overflow-y-auto transition-colors duration-500">
       <section 
         id="calculator-section" 
-        className="w-full relative z-20 text-[#050505] flex justify-center items-center px-0 sm:px-5"
-        style={{ 
-          backgroundColor: 'transparent',
-          paddingTop: 'clamp(40px, 5vw, 80px)',
-          paddingBottom: 'clamp(60px, 8vw, 100px)',
-        }}
+        className="w-full relative z-20 text-[#050505] flex justify-center items-center px-0 sm:px-6"
       >
-        <div 
-          style={{ 
-            maxWidth: '960px', 
-            width: '100%',
-            margin: '0 auto',
-          }}
-        >
-          {/* Editorial Section Header */}
+        <div className="w-full max-w-[1100px] mx-auto px-0">
+          
+          {/* Section Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-12 px-6"
+            className="text-center mb-16 px-6"
           >
-            <span className="text-xs text-muted uppercase tracking-[0.3em] font-medium block mb-4">
+            <span className="text-xs text-muted lg:text-zinc-500 uppercase tracking-[0.3em] font-medium block mb-4">
               Instant Estimation
             </span>
-            <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-text-primary">
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-text-primary lg:text-zinc-900 transition-colors duration-500">
               Estimate your project <span className="font-display italic">investment</span>
             </h2>
           </motion.div>
 
-          {/* Master Bento Container */}
-          <div 
-            className="w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-none sm:rounded-[24px] border-y sm:border-x sm:border border-black/10"
-            style={{ 
-              backgroundColor: '#fcfcfc',
-              boxShadow: '0 30px 80px -20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1)'
-            }}
-          >
-            {/* LEFT: 3 Streamlined Interactive Steps (7 cols) */}
-            <div 
-              className="lg:col-span-7 flex flex-col justify-between"
-              style={{ 
-                padding: 'clamp(28px, 4vw, 42px)',
-                borderRight: '1px solid rgba(0, 0, 0, 0.06)',
-                gap: '32px'
-              }}
-            >
-              {/* Step 1: Service Type (Segmented Switcher) */}
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                  <label style={{ fontSize: '13px', fontWeight: 600, color: '#1d1d1f', letterSpacing: '-0.01em' }}>
+          {/* Master Container: White card on mobile, transparent/borderless grid on laptop */}
+          <div className="w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-none sm:rounded-[24px] lg:rounded-none border-y sm:border-x sm:border border-black/10 lg:border-none bg-[#fcfcfc] lg:bg-transparent shadow-2xl lg:shadow-none transition-all duration-500">
+            
+            {/* LEFT: 3 Interactive Steps (7 cols) */}
+            <div className="lg:col-span-7 flex flex-col justify-between p-6 sm:p-10 lg:py-4 lg:pl-0 lg:pr-12 lg:border-r lg:border-black/10 gap-8">
+              {/* Step 1: Service Type */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-[13px] font-semibold text-[#1d1d1f] tracking-tight">
                     1. What do you need built?
                   </label>
-                  <span style={{ fontSize: '11px', color: '#5e5e5e', fontFamily: 'monospace' }}>
+                  <span className="text-[11px] text-zinc-400 font-mono">
                     Step 1 of 3
                   </span>
                 </div>
 
-                <div 
-                  className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-black/5 border border-black/5"
-                >
+                <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-black/5 border border-black/5">
                   {[
                     { id: "design", label: "Design", sub: "UI/UX & Figma" },
                     { id: "development", label: "Development", sub: "Clean Code" },
@@ -123,10 +99,10 @@ export default function Calculator() {
                           boxShadow: active ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none',
                         }}
                       >
-                        <div className="text-[11px] sm:text-[13px]" style={{ fontWeight: active ? 600 : 500, color: active ? '#050505' : '#5e5e5e', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
+                        <div className="text-[11px] sm:text-[13px] font-semibold tracking-tight" style={{ color: active ? '#050505' : '#71717a' }}>
                           {opt.label}
                         </div>
-                        <div className="text-[9px] sm:text-[10px]" style={{ color: active ? '#5e5e5e' : '#a1a1aa', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <div className="text-[9px] sm:text-[10px] mt-0.5 opacity-80 truncate" style={{ color: active ? '#71717a' : '#a1a1aa' }}>
                           {opt.sub}
                         </div>
                       </button>
@@ -136,97 +112,37 @@ export default function Calculator() {
               </div>
 
               {/* Step 2: Page Count & Scope */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                  <label style={{ fontSize: '13px', fontWeight: 600, color: '#1d1d1f', letterSpacing: '-0.01em' }}>
+              <div className="flex flex-col gap-3">
+                <div className="flex justify-between items-center">
+                  <label className="text-[13px] font-semibold text-[#1d1d1f] tracking-tight">
                     2. Number of pages:
                   </label>
                   
-                  {/* Minimalist Numeric Badge Stepper */}
-                  <div 
-                    style={{ 
-                      display: 'inline-flex', 
-                      alignItems: 'center', 
-                      backgroundColor: '#ffffff',
-                      border: '1px solid rgba(0, 0, 0, 0.1)',
-                      borderRadius: '8px',
-                      padding: '2px',
-                      gap: '2px'
-                    }}
-                  >
+                  {/* Stepper */}
+                  <div className="inline-flex items-center bg-white border border-black/10 rounded-lg p-0.5 gap-0.5">
                     <button
                       type="button"
                       onClick={() => setPages(Math.max(1, pages - 1))}
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '6px',
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        color: '#5e5e5e',
-                        fontSize: '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        transition: 'background 0.15s, color 0.15s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-                        e.currentTarget.style.color = '#050505';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#5e5e5e';
-                      }}
+                      className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-500 hover:text-black hover:bg-black/5 transition-all cursor-pointer"
                     >
                       −
                     </button>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#050505', minWidth: '60px', textAlign: 'center', fontFamily: 'monospace' }}>
+                    <span className="text-[13px] font-semibold text-[#050505] min-w-[55px] text-center font-mono">
                       {pages} {pages === 1 ? 'page' : 'pages'}
                     </span>
                     <button
                       type="button"
                       onClick={() => setPages(Math.min(20, pages + 1))}
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '6px',
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        color: '#5e5e5e',
-                        fontSize: '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        transition: 'background 0.15s, color 0.15s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-                        e.currentTarget.style.color = '#050505';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#5e5e5e';
-                      }}
+                      className="w-6 h-6 rounded-md flex items-center justify-center text-zinc-500 hover:text-black hover:bg-black/5 transition-all cursor-pointer"
                     >
                       +
                     </button>
                   </div>
                 </div>
 
-                {/* Slider Track Container */}
-                <div 
-                  style={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.02)',
-                    border: '1px solid rgba(0, 0, 0, 0.05)',
-                    borderRadius: '14px',
-                    padding: '16px 16px 14px 16px'
-                  }}
-                >
-                  {/* Range Slider */}
-                  <div style={{ position: 'relative', width: '100%', marginBottom: '14px' }}>
+                {/* Slider */}
+                <div className="bg-black/2 border border-black/5 rounded-xl p-4">
+                  <div className="relative w-full mb-3.5 flex items-center">
                     <input
                       type="range"
                       min="1"
@@ -236,7 +152,7 @@ export default function Calculator() {
                       onChange={(e) => setPages(parseInt(e.target.value))}
                       style={{
                         width: '100%',
-                        height: '6px',
+                        height: '5px',
                         borderRadius: '999px',
                         appearance: 'none',
                         outline: 'none',
@@ -246,7 +162,7 @@ export default function Calculator() {
                     />
                   </div>
 
-                  {/* 4 Balanced Full-Width Milestone Tiers */}
+                  {/* Milestone Tiers */}
                   <div className="grid grid-cols-4 gap-1 sm:gap-1.5">
                     {[
                       { label: "Landing", sub: "1 Page", val: 1 },
@@ -260,16 +176,16 @@ export default function Calculator() {
                           key={tier.val}
                           type="button"
                           onClick={() => setPages(tier.val)}
-                          className="py-1.5 px-0.5 sm:py-2 sm:px-1 rounded-lg text-center transition-all duration-150"
+                          className="py-1.5 rounded-lg text-center transition-all duration-150 border"
                           style={{
                             backgroundColor: isSelected ? '#ffffff' : 'transparent',
-                            border: isSelected ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
+                            borderColor: isSelected ? 'rgba(0, 0, 0, 0.08)' : 'transparent',
                           }}
                         >
-                          <div className="text-[9px] sm:text-[11px]" style={{ fontWeight: isSelected ? 700 : 500, color: isSelected ? '#050505' : '#5e5e5e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          <div className="text-[10px] sm:text-[11px] font-semibold" style={{ color: isSelected ? '#050505' : '#71717a' }}>
                             {tier.label}
                           </div>
-                          <div className="text-[8px] sm:text-[10px]" style={{ color: isSelected ? '#5e5e5e' : '#a1a1aa', marginTop: '1px', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
+                          <div className="text-[8px] sm:text-[9px] mt-0.5 font-mono" style={{ color: isSelected ? '#71717a' : '#a1a1aa' }}>
                             {tier.sub}
                           </div>
                         </button>
@@ -279,167 +195,104 @@ export default function Calculator() {
                 </div>
               </div>
 
-              {/* Step 3: All-In-One Growth Pack (iOS Style Card Toggle) */}
-              <div>
-                <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#1d1d1f', letterSpacing: '-0.01em', marginBottom: '12px' }}>
+              {/* Step 3: Growth Pack */}
+              <div className="flex flex-col gap-3">
+                <label className="text-[13px] font-semibold text-[#1d1d1f] tracking-tight">
                   3. Growth Essentials:
                 </label>
                 
                 <div
                   onClick={() => setIncludeGrowthPack(!includeGrowthPack)}
+                  className="flex items-center justify-between p-4 rounded-xl cursor-pointer transition-all duration-200"
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '14px 16px',
-                    borderRadius: '14px',
-                    cursor: 'pointer',
-                    userSelect: 'none',
                     backgroundColor: includeGrowthPack ? 'rgba(0, 0, 0, 0.03)' : 'rgba(0, 0, 0, 0.01)',
                     border: includeGrowthPack ? '1px solid rgba(0, 0, 0, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)',
-                    transition: 'all 0.18s ease'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
-                    {/* Switch Indicator */}
+                  <div className="flex items-center gap-3 min-w-0">
                     <div 
+                      className="flex-shrink-0 w-9 h-5 rounded-full p-0.5 flex items-center transition-colors duration-200"
                       style={{
-                        flexShrink: 0,
-                        width: '36px',
-                        height: '20px',
-                        borderRadius: '999px',
-                        backgroundColor: includeGrowthPack ? '#000000' : '#e4e4e7',
-                        padding: '2px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: includeGrowthPack ? 'flex-end' : 'flex-start',
-                        transition: 'all 0.2s ease'
+                        backgroundColor: includeGrowthPack ? '#000000' : '#e4e4e7'
                       }}
                     >
                       <div 
+                        className="w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-200"
                         style={{
-                          width: '16px',
-                          height: '16px',
-                          borderRadius: '50%',
-                          backgroundColor: '#ffffff',
-                          transition: 'all 0.2s ease',
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                          transform: includeGrowthPack ? 'translateX(16px)' : 'translateX(0px)'
                         }}
                       />
                     </div>
 
-                    <div style={{ minWidth: 0 }}>
-                      <div className="text-[12px] sm:text-[13px] truncate" style={{ fontWeight: 600, color: includeGrowthPack ? '#050505' : '#5e5e5e' }}>
+                    <div className="min-w-0">
+                      <div className="text-[12px] sm:text-[13px] font-semibold" style={{ color: includeGrowthPack ? '#050505' : '#71717a' }}>
                         SEO + Content Pack
                       </div>
-                      <div className="hidden sm:block text-[11px] truncate" style={{ color: '#5e5e5e', marginTop: '2px' }}>
+                      <div className="hidden sm:block text-[11px] text-zinc-400 mt-0.5 truncate">
                         High-converting copy, meta setup
                       </div>
                     </div>
                   </div>
 
-                  <span style={{ flexShrink: 0, fontSize: '12px', color: '#5e5e5e', fontFamily: 'monospace', whiteSpace: 'nowrap', marginLeft: '12px' }}>
+                  <span className="flex-shrink-0 text-xs text-zinc-500 font-mono ml-4">
                     +₹350 / pg
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* RIGHT: Executive Live Quote Terminal (5 cols) */}
-            <div 
-              className="lg:col-span-5 flex flex-col justify-between"
-              style={{ 
-                backgroundColor: '#f4f4f5',
-                padding: 'clamp(28px, 4vw, 42px)',
-                position: 'relative'
-              }}
-            >
+            {/* RIGHT: Live Quote Terminal */}
+            <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-10 lg:py-4 lg:pl-12 lg:pr-0 bg-[#f4f4f5] lg:bg-transparent">
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '11px', color: '#5e5e5e', fontFamily: 'monospace', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[11px] text-zinc-500 font-mono uppercase tracking-[0.08em]">
                     Estimated Investment
                   </span>
-                  <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '999px', backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#16a34a', fontWeight: 600 }}>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-semibold">
                     Fixed Scope
                   </span>
                 </div>
 
                 {/* Price Hero */}
-                <div style={{ margin: '14px 0 16px 0' }}>
-                  <div style={{ fontSize: 'clamp(40px, 4.5vw, 50px)', fontWeight: 700, color: '#050505', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                <div className="my-5">
+                  <div className="text-4xl lg:text-5xl font-bold tracking-tight text-[#050505] leading-none">
                     {formatPrice(currentPrice)}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#5e5e5e', marginTop: '6px' }}>
+                  <div className="text-xs text-zinc-500 mt-2 font-light">
                     One-time transparent cost • 100% IP ownership
                   </div>
                 </div>
 
                 {/* Agency Comparison Pill */}
-                <div 
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between',
-                    padding: '10px 14px', 
-                    borderRadius: '10px', 
-                    backgroundColor: 'rgba(0, 0, 0, 0.03)', 
-                    border: '1px solid rgba(0, 0, 0, 0.05)',
-                    marginBottom: '20px'
-                  }}
-                >
-                  <div style={{ fontSize: '11px', color: '#5e5e5e' }}>
-                    Traditional Agency: <span style={{ textDecoration: 'line-through' }}>{formatPrice(agencyCost)}</span>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-black/3 border border-black/5 mb-6">
+                  <div className="text-xs text-zinc-500">
+                    Traditional Agency: <span className="line-through">{formatPrice(agencyCost)}</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 600 }}>
+                  <span className="text-xs text-emerald-600 font-semibold">
                     Save {savingsPercent}%
                   </span>
                 </div>
 
                 {/* Feature Checklist */}
-                <div style={{ borderTop: '1px solid rgba(0, 0, 0, 0.1)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="border-t border-black/10 pt-5 flex flex-col gap-2.5">
                   {[
                     `${pages} page responsive digital experience`,
                     serviceType === "both" ? "Figma design + production Next.js code" : serviceType === "design" ? "Figma UI/UX & design tokens" : "Production Next.js codebase",
                     includeGrowthPack ? "Content copywriting & SEO included" : null,
                     "Turnaround in 7–14 days"
                   ].filter(Boolean).map((item, idx) => (
-                    <div key={idx} style={{ fontSize: '12px', color: '#1d1d1f', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ color: '#050505', fontSize: '10px', fontWeight: 'bold' }}>✓</span> {item}
+                    <div key={idx} className="text-xs text-zinc-800 flex items-center gap-2.5">
+                      <span className="text-black font-bold text-[10px]">✓</span> {item}
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* CTA Button */}
-              <div style={{ marginTop: '28px' }}>
+              <div className="mt-8">
                 <a
                   href="#contact"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '14px',
-                    borderRadius: '12px',
-                    backgroundColor: '#050505',
-                    color: '#ffffff',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    textAlign: 'center',
-                    textDecoration: 'none',
-                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
-                    transition: 'all 0.18s ease',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
-                  }}
+                  className="flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-black text-white hover:bg-zinc-800 transition-all duration-200 font-semibold text-sm shadow-md hover:scale-[1.01]"
                 >
                   <span>Get Started With This Plan</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -449,6 +302,7 @@ export default function Calculator() {
                 </a>
               </div>
             </div>
+
           </div>
         </div>
 

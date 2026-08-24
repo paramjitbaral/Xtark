@@ -10,6 +10,7 @@ interface NavbarProps {
 export default function Navbar({ activePage, goToPage }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [time, setTime] = useState("");
+  const isMenuDark = activePage === 4;
 
   useEffect(() => {
     const updateTime = () => {
@@ -148,7 +149,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
         >
           <path
             d="M 100 0 C 100 150, 0 350, 0 500 C 0 650, 100 850, 100 1000 Z"
-            fill={menuOpen ? "#0a0a0a" : "#ffffff"}
+            fill={menuOpen ? (isMenuDark ? "#ffffff" : "#0a0a0a") : (isMenuDark ? "#0a0a0a" : "#ffffff")}
             className="transition-colors duration-300"
           />
         </svg>
@@ -159,17 +160,17 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
           aria-label="Toggle menu"
         >
           {menuOpen ? (
-            /* Custom Cross Lines (Black on mobile, White on desktop) */
+            /* Custom Cross Lines (Auto-invert via mix-blend-difference on mobile, responsive color on desktop) */
             <div className="relative w-5 h-5 flex items-center justify-center">
-              <span className="absolute w-4 h-[1.5px] bg-black md:bg-white rotate-45 rounded-full transition-all duration-300" />
-              <span className="absolute w-4 h-[1.5px] bg-black md:bg-white -rotate-45 rounded-full transition-all duration-300" />
+              <span className={`absolute w-4 h-[1.5px] bg-white ${isMenuDark ? "md:bg-black" : "md:bg-white"} rotate-45 rounded-full transition-all duration-300`} />
+              <span className={`absolute w-4 h-[1.5px] bg-white ${isMenuDark ? "md:bg-black" : "md:bg-white"} -rotate-45 rounded-full transition-all duration-300`} />
             </div>
           ) : (
-            /* Custom Hamburger Lines (Auto-invert via mix-blend-difference on mobile, solid black on desktop) */
+            /* Custom Hamburger Lines (Auto-invert via mix-blend-difference on mobile, responsive color on desktop) */
             <>
-              <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
-              <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
-              <span className="w-5 h-[1.5px] bg-white md:bg-black transition-all duration-300 rounded-full" />
+              <span className={`w-5 h-[1.5px] ${isMenuDark ? "bg-white" : "bg-white md:bg-black"} transition-all duration-300 rounded-full`} />
+              <span className={`w-5 h-[1.5px] ${isMenuDark ? "bg-white" : "bg-white md:bg-black"} transition-all duration-300 rounded-full`} />
+              <span className={`w-5 h-[1.5px] ${isMenuDark ? "bg-white" : "bg-white md:bg-black"} transition-all duration-300 rounded-full`} />
             </>
           )}
         </button>
@@ -188,7 +189,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
         >
           <path
             ref={menuPathRef}
-            fill="#ffffff"
+            fill={activePage === 4 ? "#0a0a0a" : "#ffffff"}
             d="M 100 0 C 100 25, 100 75, 100 100 L 100 100 L 100 0 Z"
           />
         </svg>
@@ -204,8 +205,8 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
             >
               <span
                 className={`font-display text-[26px] md:text-[32px] lg:text-[40px] transition-all duration-350 ${activePage === link.index
-                  ? "text-black translate-y-[-2px] font-medium"
-                  : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal"
+                  ? (isMenuDark ? "text-white translate-y-[-2px] font-medium" : "text-black translate-y-[-2px] font-medium")
+                  : (isMenuDark ? "text-zinc-500 hover:text-white hover:translate-y-[-4px] font-normal" : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal")
                   }`}
               >
                 {link.label}
@@ -221,8 +222,8 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
           >
             <span
               className={`font-display text-[26px] md:text-[32px] lg:text-[40px] transition-all duration-350 ${activePage === 5
-                ? "text-black translate-y-[-2px] font-medium"
-                : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal"
+                ? (isMenuDark ? "text-white translate-y-[-2px] font-medium" : "text-black translate-y-[-2px] font-medium")
+                : (isMenuDark ? "text-zinc-500 hover:text-white hover:translate-y-[-4px] font-normal" : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal")
                 }`}
             >
               Say hi ↗
@@ -269,9 +270,9 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
         </div>
 
         {/* Mobile Time Widget in Menu */}
-        <div className="md:hidden flex items-center justify-center gap-1.5 mt-8 relative z-10 w-[80%] ml-auto pr-0 text-zinc-500 font-sans text-[11px] uppercase tracking-[0.1em] font-medium select-none">
+        <div className={`md:hidden flex items-center justify-center gap-1.5 mt-8 relative z-10 w-[80%] ml-auto pr-0 ${activePage === 4 ? "text-zinc-400" : "text-zinc-500"} font-sans text-[11px] uppercase tracking-[0.1em] font-medium select-none`}>
           <span>MUMBAI</span>
-          <span className="w-1 h-1 bg-zinc-300 rounded-full"></span>
+          <span className={`w-1 h-1 ${activePage === 4 ? "bg-zinc-500" : "bg-zinc-600"} rounded-full`}></span>
           <span>{time}</span>
         </div>
       </div>
