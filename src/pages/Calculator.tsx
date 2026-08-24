@@ -65,7 +65,10 @@ export default function Calculator() {
           </motion.div>
 
           {/* Master Container: White card on mobile, transparent/borderless grid on laptop */}
-          <div className="w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-none sm:rounded-[24px] lg:rounded-none border-y sm:border-x sm:border border-black/10 lg:border-none bg-[#fcfcfc] lg:bg-transparent shadow-2xl lg:shadow-none transition-all duration-500">
+          <div 
+            id="calculator-white-card"
+            className="w-full grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-none sm:rounded-[24px] lg:rounded-none border-y sm:border-x sm:border border-black/10 lg:border-none bg-[#fcfcfc] lg:bg-transparent shadow-2xl lg:shadow-none transition-all duration-500"
+          >
             
             {/* LEFT: 3 Interactive Steps (7 cols) */}
             <div className="lg:col-span-7 flex flex-col justify-between p-6 sm:p-10 lg:py-4 lg:pl-0 lg:pr-12 lg:border-r lg:border-black/10 gap-8">
