@@ -40,6 +40,7 @@ export default function App() {
       lerp: 0.08,
       wheelMultiplier: 1.1,
       smoothWheel: true,
+      syncTouch: true, // Smooths touch scroll momentum on mobile to prevent "flying away"
     });
 
     let rafId: number;
@@ -176,17 +177,17 @@ export default function App() {
     const tl = gsap.timeline({ onComplete });
     
     if (isMobile) {
-      // SNAPPY VERTICAL SLIDE (Native scroll feeling)
+      // PREMIUM CROSS-SLIDE FADE (butter smooth, highly performant on mobile GPUs)
       if (isForward) {
-        gsap.set(toEl, { display: "block", zIndex: 10, opacity: 1, yPercent: 100, xPercent: 0, rotate: 0, scale: 1 });
+        gsap.set(toEl, { display: "block", zIndex: 10, opacity: 0, y: 50, xPercent: 0, rotate: 0, scale: 1 });
         gsap.set(fromEl, { zIndex: 5 });
-        tl.to(fromEl, { yPercent: -20, opacity: 0, duration: 0.4, ease: "power2.out" })
-          .to(toEl, { yPercent: 0, duration: 0.5, ease: "power3.out" }, "<");
+        tl.to(fromEl, { y: -50, opacity: 0, duration: 0.45, ease: "power2.out" })
+          .to(toEl, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, "<");
       } else {
-        gsap.set(toEl, { display: "block", zIndex: 5, opacity: 0, yPercent: -20, xPercent: 0, rotate: 0, scale: 1 });
-        gsap.set(fromEl, { zIndex: 10, yPercent: 0 });
-        tl.to(fromEl, { yPercent: 100, duration: 0.4, ease: "power2.out" })
-          .to(toEl, { yPercent: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, "<");
+        gsap.set(toEl, { display: "block", zIndex: 5, opacity: 0, y: -50, xPercent: 0, rotate: 0, scale: 1 });
+        gsap.set(fromEl, { zIndex: 10, y: 0 });
+        tl.to(fromEl, { y: 50, opacity: 0, duration: 0.45, ease: "power2.out" })
+          .to(toEl, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, "<");
       }
     } else {
       // SKEWED EDITORIAL SLIDE (Desktop only)
