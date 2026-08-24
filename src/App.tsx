@@ -120,6 +120,10 @@ export default function App() {
     if (from === to) return;
     isTransitioningRef.current = true;
 
+    // Stop Lenis momentum during transition
+    const lenis = (window as any).lenisInstance;
+    if (lenis) lenis.stop();
+
     const fromEl = document.getElementById(`page-wrapper-${from}`);
     const toEl = document.getElementById(`page-wrapper-${to}`);
     
@@ -127,6 +131,8 @@ export default function App() {
       setActiveView(to as 0 | 1);
       if (to === 0) setNavPage(0);
       isTransitioningRef.current = false;
+      scrollCooldownRef.current = false;
+      if (lenis) lenis.start();
       return;
     }
 
@@ -149,10 +155,18 @@ export default function App() {
     }
 
     const onComplete = () => {
-      gsap.set(fromEl, { display: "none", clearProps: "all" });
-      gsap.set(toEl, { clearProps: "all" });
       setActiveView(to as 0 | 1);
+      gsap.set(fromEl, { display: "none", clearProps: "transform,opacity,rotate,scale,xPercent,yPercent" });
+      gsap.set(toEl, { clearProps: "transform,opacity,rotate,scale,xPercent,yPercent" });
       isTransitioningRef.current = false;
+      
+      const activeLenis = (window as any).lenisInstance;
+      if (activeLenis) activeLenis.start();
+
+      // Small 250ms buffer to absorb leftover swipe/wheel inertia
+      setTimeout(() => {
+        scrollCooldownRef.current = false;
+      }, 250);
     };
 
     const isForward = to > from;
@@ -209,7 +223,6 @@ export default function App() {
             e.preventDefault();
             scrollCooldownRef.current = true;
             triggerTransition(0, 1, 1);
-            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
           }
         }
       } else {
@@ -220,7 +233,6 @@ export default function App() {
             e.preventDefault();
             scrollCooldownRef.current = true;
             triggerTransition(1, 0);
-            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
           }
         }
       }
@@ -256,7 +268,6 @@ export default function App() {
           if (isAtBottom) {
             scrollCooldownRef.current = true;
             triggerTransition(0, 1, 1);
-            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
           }
         }
       } else {
@@ -266,7 +277,6 @@ export default function App() {
           if (isAtTop) {
             scrollCooldownRef.current = true;
             triggerTransition(1, 0);
-            setTimeout(() => { scrollCooldownRef.current = false; }, 1100);
           }
         }
       }
