@@ -240,7 +240,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
               className="menu-link-item group flex items-baseline gap-4 cursor-pointer text-left bg-transparent border-none outline-none"
             >
               <span
-                className={`font-display text-[26px] md:text-[32px] lg:text-[40px] transition-all duration-350 ${activePage === link.index
+                className={`font-display text-[26px] md:text-[28px] lg:text-[32px] transition-all duration-350 ${activePage === link.index
                   ? (isMenuDark ? "text-white translate-y-[-2px] font-medium" : "text-black translate-y-[-2px] font-medium")
                   : (isMenuDark ? "text-zinc-500 hover:text-white hover:translate-y-[-4px] font-normal" : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal")
                   }`}
@@ -257,7 +257,7 @@ export default function Navbar({ activePage, goToPage }: NavbarProps) {
             className="menu-link-item group flex items-baseline gap-4 cursor-pointer text-left bg-transparent border-none outline-none"
           >
             <span
-              className={`font-display text-[26px] md:text-[32px] lg:text-[40px] transition-all duration-350 ${activePage === 7
+              className={`font-display text-[26px] md:text-[28px] lg:text-[32px] transition-all duration-350 ${activePage === 7
                 ? (isMenuDark ? "text-white translate-y-[-2px] font-medium" : "text-black translate-y-[-2px] font-medium")
                 : (isMenuDark ? "text-zinc-500 hover:text-white hover:translate-y-[-4px] font-normal" : "text-zinc-400 hover:text-black hover:translate-y-[-4px] font-normal")
                 }`}
